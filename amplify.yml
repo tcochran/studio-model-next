@@ -35,3 +35,6 @@ test:
     files:
       - "**/*.png"
       - "**/*.mp4"
+cache:
+  paths:
+    - .next/cache/**/* # Example for Next.js
