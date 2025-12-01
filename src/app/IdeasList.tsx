@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { generateClient } from "aws-amplify/data";
@@ -44,6 +44,24 @@ export default function IdeasList({
   const searchParams = useSearchParams();
   const [ideas, setIdeas] = useState(initialIdeas);
   const client = useMemo(() => generateClient<Schema>(), []);
+  const isFirstRender = useRef(true);
+  const prevSort = useRef(currentSort);
+  const prevFilter = useRef(currentFilter);
+
+  // Sync local state when sort/filter changes (server returns new data order)
+  // Skip the first render to avoid overwriting state during hydration
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    // Only sync if sort or filter actually changed
+    if (prevSort.current !== currentSort || prevFilter.current !== currentFilter) {
+      setIdeas(initialIdeas);
+      prevSort.current = currentSort;
+      prevFilter.current = currentFilter;
+    }
+  }, [currentSort, currentFilter, initialIdeas]);
 
   const handleUpvote = async (ideaId: string) => {
     const idea = ideas.find((i) => i.id === ideaId);
@@ -75,6 +93,7 @@ export default function IdeasList({
     const params = new URLSearchParams(searchParams);
     params.set("sort", newSort);
     router.push(`/?${params.toString()}`);
+    router.refresh();
   };
 
   const handleFilterChange = (newFilter: string) => {
@@ -85,6 +104,7 @@ export default function IdeasList({
       params.set("filter", newFilter);
     }
     router.push(`/?${params.toString()}`);
+    router.refresh();
   };
 
   return (

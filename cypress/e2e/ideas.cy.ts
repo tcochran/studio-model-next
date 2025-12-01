@@ -119,4 +119,37 @@ describe("Ideas Page", () => {
     cy.url().should("include", "filter=firstLevel");
     cy.url().should("include", "sort=name");
   });
+
+  it("updates displayed ideas when sort dropdown changes without refresh", () => {
+    cy.visit("/");
+
+    // Change to sort by name
+    cy.get('[data-testid="sort-dropdown"]').select("name");
+
+    // Wait for URL to update
+    cy.url().should("include", "sort=name");
+
+    // Wait for content to update and verify it's sorted alphabetically
+    cy.get('[data-testid="idea-name"]').should("have.length.at.least", 1).then(($sortedNames) => {
+      const sortedNames = [...$sortedNames].map((el) => el.textContent || "");
+      const expectedOrder = [...sortedNames].sort((a, b) => a.localeCompare(b));
+      expect(sortedNames).to.deep.equal(expectedOrder);
+    });
+  });
+
+  it("updates displayed ideas when filter dropdown changes without refresh", () => {
+    cy.visit("/");
+
+    // Change to filter by firstLevel
+    cy.get('[data-testid="filter-dropdown"]').select("firstLevel");
+
+    // Wait for URL to update
+    cy.url().should("include", "filter=firstLevel");
+
+    // Wait for and verify all displayed items have First Level status
+    cy.get('[data-testid="idea-item"]').should("have.length.at.least", 1);
+    cy.get('[data-testid="idea-status"]').each(($status) => {
+      cy.wrap($status).should("contain", "First Level");
+    });
+  });
 });
