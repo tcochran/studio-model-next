@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 type Idea = {
   id: string;
@@ -11,6 +12,7 @@ type Idea = {
 };
 
 type SortField = "name" | "validationStatus" | "age" | "ageOldest";
+type FilterField = "all" | "firstLevel" | "secondLevel" | "scaling";
 
 const statusLabels: Record<string, string> = {
   firstLevel: "First Level",
@@ -27,9 +29,11 @@ const statusColors: Record<string, string> = {
 export default function IdeasList({
   ideas,
   currentSort,
+  currentFilter,
 }: {
   ideas: Idea[];
   currentSort: SortField;
+  currentFilter: FilterField;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -40,34 +44,79 @@ export default function IdeasList({
     router.push(`/?${params.toString()}`);
   };
 
+  const handleFilterChange = (newFilter: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (newFilter === "all") {
+      params.delete("filter");
+    } else {
+      params.set("filter", newFilter);
+    }
+    router.push(`/?${params.toString()}`);
+  };
+
   return (
     <>
-      <div className="mb-4 flex items-center gap-2">
-        <label htmlFor="sort" className="text-sm text-zinc-600 dark:text-zinc-400">
-          Sort by:
-        </label>
-        <div className="relative inline-block">
-          <select
-            id="sort"
-            data-testid="sort-dropdown"
-            value={currentSort}
-            onChange={(e) => handleSortChange(e.target.value)}
-            className="pl-3 pr-8 py-1.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer"
-          >
-            <option value="age">Age (Newest)</option>
-            <option value="ageOldest">Age (Oldest)</option>
-            <option value="name">Name</option>
-            <option value="validationStatus">Validation Status</option>
-          </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-            <svg className="h-4 w-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
+      <div className="mb-4 flex items-center gap-6">
+        <div className="flex items-center gap-2">
+          <label htmlFor="sort" className="text-sm text-zinc-600 dark:text-zinc-400">
+            Sort by:
+          </label>
+          <div className="relative inline-block">
+            <select
+              id="sort"
+              data-testid="sort-dropdown"
+              value={currentSort}
+              onChange={(e) => handleSortChange(e.target.value)}
+              className="pl-3 pr-8 py-1.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer"
+            >
+              <option value="age">Age (Newest)</option>
+              <option value="ageOldest">Age (Oldest)</option>
+              <option value="name">Name</option>
+              <option value="validationStatus">Validation Status</option>
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+              <svg className="h-4 w-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <label htmlFor="filter" className="text-sm text-zinc-600 dark:text-zinc-400">
+            Filter by:
+          </label>
+          <div className="relative inline-block">
+            <select
+              id="filter"
+              data-testid="filter-dropdown"
+              value={currentFilter}
+              onChange={(e) => handleFilterChange(e.target.value)}
+              className="pl-3 pr-8 py-1.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer"
+            >
+              <option value="all">All</option>
+              <option value="firstLevel">First Level</option>
+              <option value="secondLevel">Second Level</option>
+              <option value="scaling">Scaling</option>
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+              <svg className="h-4 w-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="overflow-x-auto" data-testid="ideas-list">
+      {ideas.length === 0 ? (
+        <p
+          className="text-zinc-600 dark:text-zinc-400 mt-4"
+          data-testid="no-ideas"
+        >
+          No ideas yet. Add your first idea!
+        </p>
+      ) : (
+        <div className="overflow-x-auto" data-testid="ideas-list">
         <table className="w-full bg-white dark:bg-zinc-900 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-800">
           <thead>
             <tr className="border-b border-zinc-200 dark:border-zinc-800">
@@ -90,10 +139,17 @@ export default function IdeasList({
                 data-testid="idea-item"
               >
                 <td className="px-4 py-3 text-zinc-900 dark:text-white" data-testid="idea-name">
-                  {idea.name}
+                  <Link
+                    href={`/ideas/${idea.id}`}
+                    className="hover:text-blue-600 dark:hover:text-blue-400 hover:underline"
+                  >
+                    {idea.name}
+                  </Link>
                 </td>
                 <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400" data-testid="idea-hypothesis">
-                  {idea.hypothesis}
+                  <div className="whitespace-pre-wrap line-clamp-3">
+                    {idea.hypothesis}
+                  </div>
                 </td>
                 <td className="px-4 py-3" data-testid="idea-status">
                   {idea.validationStatus && (
@@ -109,6 +165,7 @@ export default function IdeasList({
           </tbody>
         </table>
       </div>
+      )}
     </>
   );
 }
