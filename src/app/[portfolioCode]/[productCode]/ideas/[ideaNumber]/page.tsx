@@ -35,10 +35,13 @@ type Product = {
 
 export default async function IdeaDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ portfolioCode: string; productCode: string; ideaNumber: string }>;
+  searchParams: Promise<{ from?: string }>;
 }) {
   const { portfolioCode, productCode, ideaNumber } = await params;
+  const { from } = await searchParams;
   const ideaNum = parseInt(ideaNumber, 10);
 
   let idea = null;
@@ -77,6 +80,7 @@ export default async function IdeaDetailPage({
   }
 
   const basePath = `/${portfolioCode}/${productCode}/ideas`;
+  const backPath = from === "funnel" ? `${basePath}/funnel` : basePath;
 
   if (!idea || error) {
     return (
@@ -113,7 +117,7 @@ export default async function IdeaDetailPage({
 
         <main className="mx-auto max-w-5xl px-4 py-8">
           <Link
-            href={basePath}
+            href={backPath}
             data-testid="back-to-ideas"
             className="inline-flex items-center text-orange-600 dark:text-orange-400 hover:underline mb-6"
           >
@@ -168,13 +172,22 @@ export default async function IdeaDetailPage({
       </nav>
 
       <main className="mx-auto max-w-5xl px-4 py-8">
-        <Link
-          href={basePath}
-          data-testid="back-to-ideas"
-          className="inline-flex items-center text-orange-600 dark:text-orange-400 hover:underline mb-6"
-        >
-          &larr; Back to Ideas
-        </Link>
+        <div className="flex items-center justify-between mb-6">
+          <Link
+            href={backPath}
+            data-testid="back-to-ideas"
+            className="inline-flex items-center text-orange-600 dark:text-orange-400 hover:underline"
+          >
+            &larr; Back to Ideas
+          </Link>
+          <Link
+            href={`${basePath}/${ideaNumber}/edit`}
+            data-testid="edit-idea-button"
+            className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium"
+          >
+            Edit
+          </Link>
+        </div>
 
         <h1
           className="text-3xl font-bold text-black dark:text-white mb-6"
