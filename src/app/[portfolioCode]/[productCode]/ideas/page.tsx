@@ -4,7 +4,7 @@ import IdeasList from "../../../IdeasList";
 
 export const dynamic = "force-dynamic";
 
-type SortField = "name" | "validationStatus" | "age" | "ageOldest" | "upvotes";
+type SortField = "name" | "validationStatus" | "age" | "ageOldest" | "upvotes" | "ideaNumber";
 type FilterField = "all" | "firstLevel" | "secondLevel" | "scaling";
 
 const statusOrder: Record<string, number> = {
@@ -80,6 +80,8 @@ export default async function ScopedIdeasPage({
       ideas.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     } else if (sortBy === "ageOldest") {
       ideas.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    } else if (sortBy === "ideaNumber") {
+      ideas.sort((a, b) => (b.ideaNumber || 0) - (a.ideaNumber || 0));
     }
   } catch (e) {
     console.error("Error fetching ideas:", e);
