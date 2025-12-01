@@ -4,7 +4,7 @@ describe("Ideas Form Page", () => {
   });
 
   it("displays the form heading", () => {
-    cy.contains("h1", "Add New Idea").should("be.visible");
+    cy.contains("h1", "Add New Ideas").should("be.visible");
   });
 
   it("displays name, hypothesis and validation status fields", () => {

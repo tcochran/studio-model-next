@@ -56,7 +56,7 @@ export default function NewIdeaPage() {
     <div className="min-h-screen bg-zinc-50 dark:bg-black">
       <main className="mx-auto max-w-3xl px-4 py-8">
         <h1 className="text-3xl font-bold text-black dark:text-white mb-8">
-          Add New Idea
+          Add New Ideas
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
