@@ -36,9 +36,10 @@ type Product = {
 export default async function IdeaDetailPage({
   params,
 }: {
-  params: Promise<{ portfolioCode: string; productCode: string; id: string }>;
+  params: Promise<{ portfolioCode: string; productCode: string; ideaNumber: string }>;
 }) {
-  const { portfolioCode, productCode, id } = await params;
+  const { portfolioCode, productCode, ideaNumber } = await params;
+  const ideaNum = parseInt(ideaNumber, 10);
 
   let idea = null;
   let error: string | null = null;
@@ -61,8 +62,15 @@ export default async function IdeaDetailPage({
       }
     }
 
-    const result = await cookiesClient.models.Idea.get({ id });
-    idea = result.data;
+    // Query for idea by portfolioCode, productCode, and ideaNumber
+    const result = await cookiesClient.models.Idea.list({
+      filter: {
+        portfolioCode: { eq: portfolioCode },
+        productCode: { eq: productCode },
+        ideaNumber: { eq: ideaNum },
+      },
+    });
+    idea = result.data?.[0] || null;
   } catch (e) {
     console.error("Error fetching idea:", e);
     error = e instanceof Error ? e.message : "Unknown error";

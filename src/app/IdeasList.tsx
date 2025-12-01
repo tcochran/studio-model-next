@@ -9,6 +9,7 @@ import { formatRelativeTime } from "../utils/formatRelativeTime";
 
 type Idea = {
   id: string;
+  ideaNumber: number;
   name: string | null;
   hypothesis: string | null;
   validationStatus: string | null;
@@ -220,7 +221,7 @@ export default function IdeasList({
                 </td>
                 <td className="px-4 py-3 text-sm text-zinc-900 dark:text-white" data-testid="idea-name">
                   <Link
-                    href={basePath ? `${basePath}/${idea.id}` : `/ideas/${idea.id}`}
+                    href={basePath ? `${basePath}/${idea.ideaNumber}` : `/ideas/${idea.ideaNumber}`}
                     className="hover:text-blue-600 dark:hover:text-blue-400 hover:underline"
                   >
                     {idea.name}

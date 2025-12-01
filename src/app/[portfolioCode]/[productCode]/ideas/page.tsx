@@ -141,6 +141,7 @@ export default async function ScopedIdeasPage({
           <IdeasList
             ideas={ideas.map((idea) => ({
               id: idea.id,
+              ideaNumber: idea.ideaNumber,
               name: idea.name,
               hypothesis: idea.hypothesis,
               validationStatus: idea.validationStatus,
