@@ -1,121 +1,152 @@
 ---
 name: implement-idea
-description: Implement a feature from the product backlog following TDD practices. Use when asked to build, create, or develop a new feature with proper tests, documentation, and git workflow for studio-model-next.
+description: Guide implementation of backlog ideas through a collaborative workflow. Start by fetching idea details from MCP, create specification with technical design and task list, write tests, get user approval at each step, then implement. Use when asked to implement, build, or develop a feature from the product backlog.
 ---
 
 # Implement Idea
 
-## Instructions
+## Workflow Overview
 
-### 1. Understand the Requirement
-- Get the idea number from the user or MCP server using `mcp__product-flow__get_idea`
-- Read the corresponding spec from `spec/` directory (e.g., `spec/25-feature-name.md`)
-- Review existing code patterns in `src/` to understand the architecture
-- Check similar features to maintain consistency
+This skill guides you through a **collaborative, approval-based workflow** for implementing features from the product backlog. The user must approve key decisions before proceeding to implementation.
 
-### 2. Follow TDD (Test-Driven Development)
-- **CRITICAL**: Write Cypress E2E tests FIRST in `cypress/e2e/` before implementing
-- Review existing test patterns in the codebase
-- Tests must pass before the feature is considered complete
-- Always run: `unset ELECTRON_RUN_AS_NODE && npx cypress run`
-- Use mochawesome reporter (already configured)
+## Step-by-Step Process
 
-### 3. Implement the Feature
+### Step 1: Fetch Idea from MCP
+- Use `mcp__product-flow__get_idea` to fetch the idea details
+- Parameters: portfolioCode (e.g., "routeburn"), productCode (e.g., "product-flow"), ideaNumber
+- Review the idea name, hypothesis, and any existing context
+
+### Step 2: Create Specification Document
+- Create a new spec file in `spec/` directory (e.g., `spec/31-feature-name.md`)
+- Use the spec number from the idea number
+- Include these **required sections**:
+  - **Status**: Draft (will be updated to Complete later)
+  - **Created**: Current date (YYYY-MM-DD)
+  - **Goal**: What the feature accomplishes
+  - **Problem**: What problem it solves (optional if obvious)
+  - **Solution**: High-level approach
+  - **Technical Design**: Detailed implementation approach
+    - File structure and locations
+    - Component architecture
+    - Data flow
+    - State management approach
+  - **Task List**: Checkbox list of implementation tasks
+    - `- [ ] Task description`
+    - Break down into concrete, actionable items
+  - **Test Plan**: What needs to be tested and how
+  - **Acceptance Criteria**: Checkbox list of completion criteria
+- **ASK USER**: Present the spec and ask clarifying questions
+  - What approach should we take?
+  - Are there specific UI/UX preferences?
+  - Any constraints or considerations?
+  - Which files should be modified?
+  - Is the technical design sound?
+- **WAIT**: Do not proceed until user approves the specification
+
+### Step 3: Write Tests (TDD)
+- Based on approved spec, write Cypress E2E tests in `cypress/e2e/`
+- Review existing test patterns in the codebase for consistency
+- Test file naming: `feature-name.cy.ts`
+- Include:
+  - Setup/teardown
+  - Happy path scenarios
+  - Edge cases
+  - Error handling
+- **ASK USER**: Show the test plan and ask:
+  - Are these test cases comprehensive?
+  - Any additional scenarios to test?
+  - Should we modify existing tests?
+- **WAIT**: Do not proceed until user approves the tests
+
+### Step 4: Review Implementation Approach
+- Outline the implementation plan based on the spec:
+  - Files to create or modify
+  - Backend changes needed (if any)
+  - Component structure
+  - State management approach
+- **ASK USER**: Present the plan and confirm:
+  - Does this approach make sense?
+  - Any architectural concerns?
+  - Should we use different patterns?
+- **WAIT**: Do not proceed until user approves the approach
+
+### Step 5: Implement the Feature
+**ONLY PROCEED AFTER USER APPROVAL OF STEPS 2, 3, AND 4**
+
 - Follow Next.js 15 + React 19 conventions
-- Use Tailwind CSS for styling (no custom CSS unless necessary)
+- Use Tailwind CSS for styling (custom button color: `bg-[rgb(247,71,64)]`)
 - Keep code simple and focused - avoid over-engineering
 - Write self-documenting code with clear variable names
 - Only add comments where logic is complex or non-obvious
 - Match existing patterns in the codebase
 
-### 4. Backend Changes (if needed)
+**Backend Changes (if needed):**
 - Update GraphQL schema in `amplify/data/resource.ts`
 - Add custom queries/mutations/subscriptions as needed
 - Run `npx ampx sandbox --once` to regenerate local outputs
-- Test with local sandbox before pushing to production
-- Safe to regenerate `amplify_outputs.json` locally
+- Test with local sandbox before pushing
 
-### 5. Testing & Validation
+**Check off tasks** in the spec's task list as you complete them.
+
+### Step 6: Run Tests
 - Run all tests: `unset ELECTRON_RUN_AS_NODE && npx cypress run`
-- Fix any test failures immediately
+- **If tests fail**: Fix the implementation and re-run tests
+- **If tests pass**: Show results to user and proceed
+
+### Step 7: Manual Testing
 - Test manually in browser (http://localhost:3000)
 - Verify both light and dark modes work
 - Check responsive design on different screen sizes
+- **ASK USER**: Request user to manually verify the feature works as expected
+- **WAIT**: Do not commit until user confirms it works
 
-### 6. Documentation
-- Update spec file status to "Complete" with completion date
-- Add "Completed" date field to spec frontmatter
-- Update CLAUDE.md if project structure or conventions change
-- No need for additional documentation files unless explicitly requested
+### Step 8: Update Documentation
+- Update spec file:
+  - Change status from "Draft" to "Complete" or "Completed"
+  - Add "Completed" date field (if not already there)
+  - Ensure all task checkboxes are checked
+  - Ensure all acceptance criteria are checked
+- Update CLAUDE.md if project structure or conventions changed
+- No additional documentation files unless explicitly requested
 
-### 7. Commit & Push
-- **CRITICAL**: Commit ALL changed files with clear, descriptive message
+### Step 9: Commit & Push
+**ONLY AFTER USER APPROVAL**
+
+- **ASK USER**: "Ready to commit and push? This will auto-deploy to production."
+- **WAIT**: Do not commit until user confirms
+- Commit ALL changed files with clear, descriptive message
 - Git status must be completely clean (no unstaged or untracked files)
-- Follow commit message format: "Verb noun with details"
-- Include spec number in commit if applicable
+- Include spec number in commit message (e.g., "Implement feature X (spec 31)")
 - Push to main branch (auto-deploys to AWS Amplify)
 - Production URL: https://main.dok8rg7vk45b7.amplifyapp.com
 
-## Examples
+## Critical Rules
 
-**Usage examples:**
-- "Implement idea #31 from the backlog"
-- "Build the search feature from spec 25"
-- "Create the analytics dashboard with tests"
-- "Add user profile editing functionality"
-
-**What this skill does:**
-- Fetches idea details from MCP server
-- Reads specification files
-- Writes tests first (TDD)
-- Implements the feature
-- Runs all tests to verify
-- Updates documentation
-- Commits and pushes changes
+1. **Never skip approval gates** - wait for user confirmation at each step
+2. **Ask clarifying questions** - don't make assumptions about requirements
+3. **Show your work** - present specs, tests, and code for review before proceeding
+4. **Test-Driven Development** - write tests before implementation
+5. **Clean git state** - commit all files or clean them up completely
+6. **Include required spec sections** - Technical Design and Task List are mandatory
 
 ## Project Context
 
 ### Tech Stack
-- **Frontend**: Next.js 15, React 19, Tailwind CSS
-- **Backend**: AWS Amplify Gen 2 (AppSync GraphQL, DynamoDB)
-- **Testing**: Cypress E2E tests with mochawesome reporter
-- **Deployment**: AWS Amplify Hosting (auto-deploy on push to main)
+- Frontend: Next.js 15, React 19, Tailwind CSS
+- Backend: AWS Amplify Gen 2 (AppSync GraphQL, DynamoDB)
+- Testing: Cypress E2E with mochawesome reporter
+- Deployment: AWS Amplify Hosting (auto-deploy on push)
 
-### Development Workflow
-1. Test-Driven Development (TDD) is mandatory
-2. Write tests before implementation
-3. All tests must pass before committing
-4. Clean git status before pushing
-5. Auto-deployment triggers on push
+### File Locations
+- Specs: `spec/`
+- Tests: `cypress/e2e/`
+- Pages: `src/app/`
+- Components: `src/components/` or `src/app/`
+- Backend: `amplify/data/resource.ts`
 
-### Important Notes
-- Never write code without tests first
-- Always use `unset ELECTRON_RUN_AS_NODE` before Cypress (required in VSCode)
-- Custom button color: RGB(247, 71, 64) - use `bg-[rgb(247,71,64)]`
-- Validation status colors: First Level = blue, Second Level = purple, Scaling = green
-- Max content width: `max-w-7xl` for idea pages, `max-w-5xl` for portfolio pages
+### Important Conventions
+- Custom button color: `bg-[rgb(247,71,64)]` hover: `bg-[rgb(227,51,44)]`
+- Validation colors: First Level = blue, Second Level = purple, Scaling = green
+- Max width: `max-w-7xl` for idea pages, `max-w-5xl` for portfolio pages
 - Never use emdashes in writing
-- Commit ALL files or clean them up - git status should be empty after commit
-
-### File Structure
-```
-studio-model-next/
-├── amplify/              # AWS Amplify Gen 2 backend
-│   └── data/
-│       └── resource.ts   # GraphQL schema
-├── src/
-│   ├── app/              # Next.js App Router pages
-│   └── utils/            # Utility functions
-├── cypress/
-│   └── e2e/              # E2E test specs
-├── spec/                 # Technical specifications
-└── .claude/
-    └── skills/           # Claude Code skills
-```
-
-### Commands Reference
-- **Dev server**: `npm run dev`
-- **Amplify sandbox**: `npx ampx sandbox`
-- **Regenerate outputs**: `npx ampx sandbox --once`
-- **Tests (headless)**: `unset ELECTRON_RUN_AS_NODE && npx cypress run`
-- **Tests (interactive)**: `unset ELECTRON_RUN_AS_NODE && npx cypress open`
+- Always `unset ELECTRON_RUN_AS_NODE` before Cypress (required in VSCode)
