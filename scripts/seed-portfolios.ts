@@ -81,14 +81,14 @@ const specIdeas = [
     name: "Ideas List Filtering",
     hypothesis:
       "If we allow users to filter ideas by validation status, then they can focus on ideas at specific stages of the validation funnel.",
-    validationStatus: "secondLevel" as const,
+    validationStatus: "scaling" as const,
     source: "customerFeedback" as const,
   },
   {
     name: "Idea Detail View",
     hypothesis:
       "If we provide a detailed view for each idea, then users can see all information about an idea in one place and make informed decisions.",
-    validationStatus: "secondLevel" as const,
+    validationStatus: "scaling" as const,
     source: "customerFeedback" as const,
   },
   {
@@ -295,7 +295,7 @@ async function seedIdeas() {
         source: idea.source,
         portfolioCode,
         productCode,
-        upvotes: Math.floor(Math.random() * 10), // Random upvotes 0-9
+        upvotes: 0,
       });
 
       if (result.data) {
