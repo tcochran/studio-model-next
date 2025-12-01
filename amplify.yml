@@ -25,7 +25,6 @@ test:
   phases:
     preTest:
       commands:
-        - npm ci
         - npm run build
     test:
       commands:
