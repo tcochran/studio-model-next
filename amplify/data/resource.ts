@@ -1,11 +1,14 @@
 import { type ClientSchema, a, defineData } from '@aws-amplify/backend';
 
+const ValidationStatus = a.enum(['firstLevel', 'secondLevel', 'scaling']);
+
 const schema = a.schema({
+  ValidationStatus,
   Idea: a
     .model({
       name: a.string().required(),
       hypothesis: a.string().required(),
-      validationStatus: a.enum(['first-level', 'second-level', 'scaling']),
+      validationStatus: a.ref('ValidationStatus'),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 });

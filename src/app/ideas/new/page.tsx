@@ -5,14 +5,14 @@ import { useRouter } from "next/navigation";
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "../../../../amplify/data/resource";
 
-type ValidationStatus = "first-level" | "second-level" | "scaling";
+type ValidationStatus = "firstLevel" | "secondLevel" | "scaling";
 
 export default function NewIdeaPage() {
   const client = useMemo(() => generateClient<Schema>(), []);
   const router = useRouter();
   const [name, setName] = useState("");
   const [hypothesis, setHypothesis] = useState("");
-  const [validationStatus, setValidationStatus] = useState<ValidationStatus>("first-level");
+  const [validationStatus, setValidationStatus] = useState<ValidationStatus>("firstLevel");
   const [nameError, setNameError] = useState("");
   const [hypothesisError, setHypothesisError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -127,8 +127,8 @@ export default function NewIdeaPage() {
                 onChange={(e) => setValidationStatus(e.target.value as ValidationStatus)}
                 className="pl-4 pr-10 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer"
               >
-                <option value="first-level">First Level</option>
-                <option value="second-level">Second Level</option>
+                <option value="firstLevel">First Level</option>
+                <option value="secondLevel">Second Level</option>
                 <option value="scaling">Scaling</option>
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">

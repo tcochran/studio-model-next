@@ -1,20 +1,31 @@
 import { cookiesClient } from "../utils/amplify-server-utils";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 const statusLabels: Record<string, string> = {
-  "first-level": "First Level",
-  "second-level": "Second Level",
+  firstLevel: "First Level",
+  secondLevel: "Second Level",
   scaling: "Scaling",
 };
 
 const statusColors: Record<string, string> = {
-  "first-level": "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  "second-level": "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
+  firstLevel: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+  secondLevel: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
   scaling: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
 };
 
 export default async function Home() {
-  const { data: ideas } = await cookiesClient.models.Idea.list();
+  let ideas: NonNullable<Awaited<ReturnType<typeof cookiesClient.models.Idea.list>>["data"]> = [];
+  let fetchError: string | null = null;
+
+  try {
+    const result = await cookiesClient.models.Idea.list();
+    ideas = result.data?.filter((idea) => idea && idea.name) ?? [];
+  } catch (e) {
+    console.error("Error fetching ideas:", e);
+    fetchError = e instanceof Error ? e.message : "Unknown error fetching ideas";
+  }
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-black">
@@ -31,7 +42,13 @@ export default async function Home() {
           </Link>
         </div>
 
-        {ideas && ideas.length > 0 ? (
+        {fetchError && (
+          <div className="mb-4 p-4 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 rounded-lg">
+            Error loading ideas: {fetchError}
+          </div>
+        )}
+
+        {!fetchError && ideas.length > 0 ? (
           <div className="overflow-x-auto" data-testid="ideas-list">
             <table className="w-full bg-white dark:bg-zinc-900 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-800">
               <thead>
@@ -74,14 +91,14 @@ export default async function Home() {
               </tbody>
             </table>
           </div>
-        ) : (
+        ) : !fetchError ? (
           <p
             className="text-zinc-600 dark:text-zinc-400"
             data-testid="no-ideas"
           >
             No ideas yet. Add your first idea!
           </p>
-        )}
+        ) : null}
       </main>
     </div>
   );

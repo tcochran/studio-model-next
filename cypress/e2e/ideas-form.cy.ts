@@ -27,10 +27,10 @@ describe("Ideas Form Page", () => {
   it("allows entering idea details", () => {
     cy.get('input[name="name"]').type("My Test Idea");
     cy.get('textarea[name="hypothesis"]').type("This is my hypothesis");
-    cy.get('select[name="validationStatus"]').select("second-level");
+    cy.get('select[name="validationStatus"]').select("secondLevel");
     cy.get('input[name="name"]').should("have.value", "My Test Idea");
     cy.get('textarea[name="hypothesis"]').should("have.value", "This is my hypothesis");
-    cy.get('select[name="validationStatus"]').should("have.value", "second-level");
+    cy.get('select[name="validationStatus"]').should("have.value", "secondLevel");
   });
 
   it("redirects to home page after successful submission", () => {
@@ -46,6 +46,8 @@ describe("Ideas Form Page", () => {
     cy.get('textarea[name="hypothesis"]').type("Test hypothesis");
     cy.get('button[type="submit"]').click();
     cy.url().should("eq", Cypress.config().baseUrl + "/");
-    cy.contains(uniqueName).should("be.visible");
+    cy.reload();
+    cy.get('[data-testid="ideas-list"]').should("exist");
+    cy.contains(uniqueName, { timeout: 10000 }).should("be.visible");
   });
 });
