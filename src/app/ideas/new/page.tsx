@@ -119,17 +119,24 @@ export default function NewIdeaPage() {
             >
               Validation Status
             </label>
-            <select
-              id="validationStatus"
-              name="validationStatus"
-              value={validationStatus}
-              onChange={(e) => setValidationStatus(e.target.value as ValidationStatus)}
-              className="px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer"
-            >
-              <option value="first-level">First Level</option>
-              <option value="second-level">Second Level</option>
-              <option value="scaling">Scaling</option>
-            </select>
+            <div className="relative inline-block">
+              <select
+                id="validationStatus"
+                name="validationStatus"
+                value={validationStatus}
+                onChange={(e) => setValidationStatus(e.target.value as ValidationStatus)}
+                className="pl-4 pr-10 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer"
+              >
+                <option value="first-level">First Level</option>
+                <option value="second-level">Second Level</option>
+                <option value="scaling">Scaling</option>
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                <svg className="h-4 w-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
           </div>
 
           <button
