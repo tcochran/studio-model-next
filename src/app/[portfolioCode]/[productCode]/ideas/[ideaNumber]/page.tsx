@@ -10,7 +10,7 @@ const statusLabels: Record<string, string> = {
 };
 
 const statusColors: Record<string, string> = {
-  firstLevel: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+  firstLevel: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200",
   secondLevel:
     "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
   scaling: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
@@ -115,7 +115,7 @@ export default async function IdeaDetailPage({
           <Link
             href={basePath}
             data-testid="back-to-ideas"
-            className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline mb-6"
+            className="inline-flex items-center text-orange-600 dark:text-orange-400 hover:underline mb-6"
           >
             &larr; Back to Ideas
           </Link>
@@ -171,7 +171,7 @@ export default async function IdeaDetailPage({
         <Link
           href={basePath}
           data-testid="back-to-ideas"
-          className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline mb-6"
+          className="inline-flex items-center text-orange-600 dark:text-orange-400 hover:underline mb-6"
         >
           &larr; Back to Ideas
         </Link>

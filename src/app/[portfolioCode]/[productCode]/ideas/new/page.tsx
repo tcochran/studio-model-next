@@ -159,7 +159,7 @@ export default function NewIdeaPage() {
               name="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               placeholder="Enter your idea name"
             />
             {nameError && (
@@ -185,7 +185,7 @@ export default function NewIdeaPage() {
               value={hypothesis}
               onChange={(e) => setHypothesis(e.target.value)}
               rows={4}
-              className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               placeholder="Describe your hypothesis"
             />
             {hypothesisError && (
@@ -211,7 +211,7 @@ export default function NewIdeaPage() {
                 name="validationStatus"
                 value={validationStatus}
                 onChange={(e) => setValidationStatus(e.target.value as ValidationStatus)}
-                className="pl-4 pr-10 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer"
+                className="pl-4 pr-10 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none cursor-pointer"
               >
                 <option value="firstLevel">First Level</option>
                 <option value="secondLevel">Second Level</option>
@@ -239,7 +239,7 @@ export default function NewIdeaPage() {
                 data-testid="source-select"
                 value={source}
                 onChange={(e) => setSource(e.target.value as Source | "")}
-                className="pl-4 pr-10 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer"
+                className="pl-4 pr-10 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none cursor-pointer"
               >
                 <option value="">Select source...</option>
                 <option value="customerFeedback">Customer Feedback</option>
@@ -261,7 +261,7 @@ export default function NewIdeaPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium rounded-lg transition-colors"
+            className="w-full px-4 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-orange-400 text-white font-medium rounded-lg transition-colors"
           >
             {isSubmitting ? "Adding..." : "Add Idea"}
           </button>

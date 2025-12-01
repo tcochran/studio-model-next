@@ -137,7 +137,7 @@ export default function NewDocumentPage() {
               name="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               placeholder="Enter document title"
             />
             {titleError && (
@@ -163,7 +163,7 @@ export default function NewDocumentPage() {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               rows={15}
-              className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm"
+              className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent font-mono text-sm"
               placeholder="Paste or type your markdown content here..."
             />
             {contentError && (
@@ -179,7 +179,7 @@ export default function NewDocumentPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium rounded-lg transition-colors"
+            className="w-full px-4 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-orange-400 text-white font-medium rounded-lg transition-colors"
           >
             {isSubmitting ? "Adding..." : "Add Document"}
           </button>

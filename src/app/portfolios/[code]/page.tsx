@@ -145,7 +145,7 @@ export default function PortfolioDetailPage() {
         <main className="mx-auto max-w-3xl px-4 py-8">
           <Link
             href="/portfolios"
-            className="text-blue-600 dark:text-blue-400 hover:underline mb-4 inline-block"
+            className="text-orange-600 dark:text-orange-400 hover:underline mb-4 inline-block"
           >
             &larr; Back to Portfolios
           </Link>
@@ -173,7 +173,7 @@ export default function PortfolioDetailPage() {
       <main className="mx-auto max-w-3xl px-4 py-8" data-testid="portfolio-detail">
         <Link
           href="/portfolios"
-          className="text-blue-600 dark:text-blue-400 hover:underline mb-4 inline-block"
+          className="text-orange-600 dark:text-orange-400 hover:underline mb-4 inline-block"
         >
           &larr; Back to Portfolios
         </Link>
@@ -198,7 +198,7 @@ export default function PortfolioDetailPage() {
             <button
               data-testid="add-owner-button"
               onClick={() => setShowAddOwner(true)}
-              className="px-3 py-1 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+              className="px-3 py-1 text-sm bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors"
             >
               + Add Owner
             </button>
@@ -218,7 +218,7 @@ export default function PortfolioDetailPage() {
                 <button
                   data-testid="save-owner-button"
                   onClick={handleAddOwner}
-                  className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+                  className="px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white rounded-lg"
                 >
                   Save
                 </button>
@@ -258,7 +258,7 @@ export default function PortfolioDetailPage() {
             <button
               data-testid="add-product-button"
               onClick={() => setShowAddProduct(true)}
-              className="px-3 py-1 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+              className="px-3 py-1 text-sm bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors"
             >
               + Add Product
             </button>
@@ -286,7 +286,7 @@ export default function PortfolioDetailPage() {
                 <button
                   data-testid="save-product-button"
                   onClick={handleAddProduct}
-                  className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+                  className="px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white rounded-lg"
                 >
                   Save
                 </button>

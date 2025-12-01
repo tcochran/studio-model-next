@@ -64,7 +64,7 @@ export default async function PortfoliosPage() {
           </h1>
           <Link
             href="/portfolios/new"
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+            className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-lg transition-colors"
           >
             + New Portfolio
           </Link>
@@ -83,7 +83,7 @@ export default async function PortfoliosPage() {
             </p>
             <Link
               href="/portfolios/new"
-              className="text-blue-600 dark:text-blue-400 hover:underline"
+              className="text-orange-600 dark:text-orange-400 hover:underline"
             >
               Create a portfolio
             </Link>
@@ -97,7 +97,7 @@ export default async function PortfoliosPage() {
                 key={portfolio.code}
                 href={`/portfolios/${portfolio.code}`}
                 data-testid="portfolio-card"
-                className="block p-6 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:border-blue-300 dark:hover:border-blue-700 transition-colors"
+                className="block p-6 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:border-orange-300 dark:hover:border-orange-700 transition-colors"
               >
                 <h2 className="text-lg font-semibold text-black dark:text-white">
                   {portfolio.name}

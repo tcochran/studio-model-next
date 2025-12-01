@@ -59,7 +59,7 @@ export default function NewPortfolioPage() {
       <main className="mx-auto max-w-2xl px-4 py-8">
         <Link
           href="/portfolios"
-          className="text-blue-600 dark:text-blue-400 hover:underline mb-4 inline-block"
+          className="text-orange-600 dark:text-orange-400 hover:underline mb-4 inline-block"
         >
           &larr; Back to Portfolios
         </Link>
@@ -91,7 +91,7 @@ export default function NewPortfolioPage() {
               name="organizationName"
               value={organizationName}
               onChange={(e) => setOrganizationName(e.target.value)}
-              className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-black dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-black dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               placeholder="e.g., Acme Corp"
             />
           </div>
@@ -109,7 +109,7 @@ export default function NewPortfolioPage() {
               name="code"
               value={code}
               onChange={(e) => setCode(e.target.value)}
-              className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-black dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-black dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               placeholder="e.g., acme"
             />
             <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
@@ -130,7 +130,7 @@ export default function NewPortfolioPage() {
               name="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-black dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-black dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               placeholder="e.g., Consumer Products"
             />
           </div>
@@ -138,7 +138,7 @@ export default function NewPortfolioPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium rounded-lg transition-colors"
+            className="w-full px-4 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-orange-400 text-white font-medium rounded-lg transition-colors"
           >
             {submitting ? "Creating..." : "Create Portfolio"}
           </button>

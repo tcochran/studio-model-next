@@ -162,7 +162,7 @@ export default function DocumentDetailPage() {
         <main className="mx-auto max-w-3xl px-4 py-8">
           <Link
             href={basePath}
-            className="text-blue-600 dark:text-blue-400 hover:underline mb-4 inline-block"
+            className="text-orange-600 dark:text-orange-400 hover:underline mb-4 inline-block"
           >
             &larr; Back to Knowledge Base
           </Link>
@@ -212,7 +212,7 @@ export default function DocumentDetailPage() {
       <main className="mx-auto max-w-3xl px-4 py-8">
         <Link
           href={basePath}
-          className="text-blue-600 dark:text-blue-400 hover:underline mb-4 inline-block"
+          className="text-orange-600 dark:text-orange-400 hover:underline mb-4 inline-block"
         >
           &larr; Back to Knowledge Base
         </Link>
@@ -224,7 +224,7 @@ export default function DocumentDetailPage() {
           <button
             onClick={handleDownload}
             data-testid="download-button"
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+            className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-lg transition-colors"
           >
             Download
           </button>

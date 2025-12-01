@@ -28,7 +28,7 @@ const statusLabels: Record<string, string> = {
 };
 
 const statusColors: Record<string, string> = {
-  firstLevel: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+  firstLevel: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200",
   secondLevel: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
   scaling: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
 };
@@ -142,7 +142,7 @@ export default function IdeasList({
               data-testid="sort-dropdown"
               value={currentSort}
               onChange={(e) => handleSortChange(e.target.value)}
-              className="pl-3 pr-8 py-1.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer"
+              className="pl-3 pr-8 py-1.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none cursor-pointer"
             >
               <option value="ideaNumber"># (Newest)</option>
               <option value="age">Age (Newest)</option>
@@ -169,7 +169,7 @@ export default function IdeasList({
               data-testid="filter-dropdown"
               value={currentFilter}
               onChange={(e) => handleFilterChange(e.target.value)}
-              className="pl-3 pr-8 py-1.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer"
+              className="pl-3 pr-8 py-1.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none cursor-pointer"
             >
               <option value="all">All</option>
               <option value="firstLevel">First Level</option>
@@ -237,7 +237,7 @@ export default function IdeasList({
                 <td className="px-4 py-3 text-sm text-zinc-900 dark:text-white" data-testid="idea-name">
                   <Link
                     href={basePath ? `${basePath}/${idea.ideaNumber}` : `/ideas/${idea.ideaNumber}`}
-                    className="hover:text-blue-600 dark:hover:text-blue-400 hover:underline"
+                    className="hover:text-orange-600 dark:hover:text-orange-400 hover:underline"
                     onClick={(e) => e.stopPropagation()}
                   >
                     {idea.name}
