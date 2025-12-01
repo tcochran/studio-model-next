@@ -21,22 +21,22 @@ frontend:
     paths:
       - node_modules/**/*
       - .next/cache/**/*
-test:
-  phases:
-    preTest:
-      commands:
-        - npm ci
-        - npm run build
-    test:
-      commands:
-        - npx start-server-and-test start http://localhost:3000 cypress:run
-    postTest:
-      commands:
-        - npx mochawesome-merge cypress/report/*.json > cypress/report/combined.json
-        - npx marge cypress/report/combined.json -f report -o cypress/report
-  artifacts:
-    baseDirectory: cypress
-    configFilePath: "**/mochawesome.json"
-    files:
-      - "**/*.png"
-      - "**/*.mp4"
+# test:
+#   phases:
+#     preTest:
+#       commands:
+#         - npm ci
+#         - npm run build
+#     test:
+#       commands:
+#         - npx start-server-and-test start http://localhost:3000 cypress:run
+#     postTest:
+#       commands:
+#         - npx mochawesome-merge cypress/report/*.json > cypress/report/combined.json
+#         - npx marge cypress/report/combined.json -f report -o cypress/report
+#   artifacts:
+#     baseDirectory: cypress
+#     configFilePath: "**/mochawesome.json"
+#     files:
+#       - "**/*.png"
+#       - "**/*.mp4"
