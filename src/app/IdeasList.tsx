@@ -198,10 +198,10 @@ export default function IdeasList({
               <th className="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-white">
                 Hypothesis
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-white">
+              <th className="px-4 py-3 text-center text-sm font-semibold text-zinc-900 dark:text-white">
                 Validation Status
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-white">
+              <th className="px-4 py-3 text-center text-sm font-semibold text-zinc-900 dark:text-white">
                 Source
               </th>
               <th className="px-4 py-3 text-right text-sm font-semibold text-zinc-900 dark:text-white">
@@ -232,7 +232,7 @@ export default function IdeasList({
                     {idea.hypothesis}
                   </div>
                 </td>
-                <td className="px-4 py-3" data-testid="idea-status">
+                <td className="px-4 py-3 text-center" data-testid="idea-status">
                   {idea.validationStatus && (
                     <span
                       className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${statusColors[idea.validationStatus] || "bg-zinc-100 text-zinc-800"}`}
@@ -241,7 +241,7 @@ export default function IdeasList({
                     </span>
                   )}
                 </td>
-                <td className="px-4 py-3" data-testid="idea-source">
+                <td className="px-4 py-3 text-center" data-testid="idea-source">
                   {idea.source && (
                     <span
                       className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${sourceColor}`}
@@ -253,7 +253,7 @@ export default function IdeasList({
                 <td className="px-4 py-3 text-right">
                   <div className="flex items-center justify-end gap-2">
                     <span
-                      className="text-zinc-600 dark:text-zinc-400"
+                      className="text-sm text-zinc-600 dark:text-zinc-400"
                       data-testid="upvote-count"
                     >
                       {idea.upvotes || 0}
