@@ -5,29 +5,44 @@ import { useRouter } from "next/navigation";
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "../../../../amplify/data/resource";
 
+type ValidationStatus = "first-level" | "second-level" | "scaling";
+
 export default function NewIdeaPage() {
   const client = useMemo(() => generateClient<Schema>(), []);
   const router = useRouter();
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [titleError, setTitleError] = useState("");
+  const [name, setName] = useState("");
+  const [hypothesis, setHypothesis] = useState("");
+  const [validationStatus, setValidationStatus] = useState<ValidationStatus>("first-level");
+  const [nameError, setNameError] = useState("");
+  const [hypothesisError, setHypothesisError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setTitleError("");
+    setNameError("");
+    setHypothesisError("");
 
-    if (!title.trim()) {
-      setTitleError("Title is required");
-      return;
+    let hasError = false;
+
+    if (!name.trim()) {
+      setNameError("Name is required");
+      hasError = true;
     }
+
+    if (!hypothesis.trim()) {
+      setHypothesisError("Hypothesis is required");
+      hasError = true;
+    }
+
+    if (hasError) return;
 
     setIsSubmitting(true);
 
     try {
       await client.models.Idea.create({
-        title: title.trim(),
-        description: description.trim(),
+        name: name.trim(),
+        hypothesis: hypothesis.trim(),
+        validationStatus,
       });
       router.push("/");
       router.refresh();
@@ -47,46 +62,74 @@ export default function NewIdeaPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label
-              htmlFor="title"
+              htmlFor="name"
               className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
             >
-              Title
+              Name
             </label>
             <input
               type="text"
-              id="title"
-              name="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              id="name"
+              name="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Enter your idea title"
+              placeholder="Enter your idea name"
             />
-            {titleError && (
+            {nameError && (
               <p
                 className="mt-1 text-sm text-red-600 dark:text-red-400"
-                data-testid="title-error"
+                data-testid="name-error"
               >
-                {titleError}
+                {nameError}
               </p>
             )}
           </div>
 
           <div>
             <label
-              htmlFor="description"
+              htmlFor="hypothesis"
               className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
             >
-              Description
+              Hypothesis
             </label>
             <textarea
-              id="description"
-              name="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              id="hypothesis"
+              name="hypothesis"
+              value={hypothesis}
+              onChange={(e) => setHypothesis(e.target.value)}
               rows={4}
               className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Describe your idea"
+              placeholder="Describe your hypothesis"
             />
+            {hypothesisError && (
+              <p
+                className="mt-1 text-sm text-red-600 dark:text-red-400"
+                data-testid="hypothesis-error"
+              >
+                {hypothesisError}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label
+              htmlFor="validationStatus"
+              className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+            >
+              Validation Status
+            </label>
+            <select
+              id="validationStatus"
+              name="validationStatus"
+              value={validationStatus}
+              onChange={(e) => setValidationStatus(e.target.value as ValidationStatus)}
+              className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="first-level">First Level</option>
+              <option value="second-level">Second Level</option>
+              <option value="scaling">Scaling</option>
+            </select>
           </div>
 
           <button

@@ -7,9 +7,10 @@ describe("Ideas Form Page", () => {
     cy.contains("h1", "Add New Idea").should("be.visible");
   });
 
-  it("displays title and description input fields", () => {
-    cy.get('input[name="title"]').should("be.visible");
-    cy.get('textarea[name="description"]').should("be.visible");
+  it("displays name, hypothesis and validation status fields", () => {
+    cy.get('input[name="name"]').should("be.visible");
+    cy.get('textarea[name="hypothesis"]').should("be.visible");
+    cy.get('select[name="validationStatus"]').should("be.visible");
   });
 
   it("displays a submit button", () => {
@@ -19,32 +20,32 @@ describe("Ideas Form Page", () => {
 
   it("shows validation error when submitting empty form", () => {
     cy.get('button[type="submit"]').click();
-    cy.get('[data-testid="title-error"]').should("be.visible");
+    cy.get('[data-testid="name-error"]').should("be.visible");
+    cy.get('[data-testid="hypothesis-error"]').should("be.visible");
   });
 
   it("allows entering idea details", () => {
-    cy.get('input[name="title"]').type("My Test Idea");
-    cy.get('textarea[name="description"]').type("This is a test description");
-    cy.get('input[name="title"]').should("have.value", "My Test Idea");
-    cy.get('textarea[name="description"]').should(
-      "have.value",
-      "This is a test description"
-    );
+    cy.get('input[name="name"]').type("My Test Idea");
+    cy.get('textarea[name="hypothesis"]').type("This is my hypothesis");
+    cy.get('select[name="validationStatus"]').select("second-level");
+    cy.get('input[name="name"]').should("have.value", "My Test Idea");
+    cy.get('textarea[name="hypothesis"]').should("have.value", "This is my hypothesis");
+    cy.get('select[name="validationStatus"]').should("have.value", "second-level");
   });
 
   it("redirects to home page after successful submission", () => {
-    cy.get('input[name="title"]').type("New Idea Title");
-    cy.get('textarea[name="description"]').type("New idea description text");
+    cy.get('input[name="name"]').type("New Idea Name");
+    cy.get('textarea[name="hypothesis"]').type("New hypothesis text");
     cy.get('button[type="submit"]').click();
     cy.url().should("eq", Cypress.config().baseUrl + "/");
   });
 
   it("shows the new idea in the ideas list after submission", () => {
-    const uniqueTitle = `Test Idea ${Date.now()}`;
-    cy.get('input[name="title"]').type(uniqueTitle);
-    cy.get('textarea[name="description"]').type("Test description");
+    const uniqueName = `Test Idea ${Date.now()}`;
+    cy.get('input[name="name"]').type(uniqueName);
+    cy.get('textarea[name="hypothesis"]').type("Test hypothesis");
     cy.get('button[type="submit"]').click();
     cy.url().should("eq", Cypress.config().baseUrl + "/");
-    cy.contains(uniqueTitle).should("be.visible");
+    cy.contains(uniqueName).should("be.visible");
   });
 });
