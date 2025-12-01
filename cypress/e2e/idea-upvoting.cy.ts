@@ -1,20 +1,22 @@
+import { TEST_IDEAS_PATH } from "../support/test-paths";
+
 describe("Idea Upvoting", () => {
   it("displays upvote button for each idea", () => {
-    cy.visit("/");
+    cy.visit(TEST_IDEAS_PATH);
     cy.get('[data-testid="idea-item"]').first().within(() => {
       cy.get('[data-testid="upvote-button"]').should("exist");
     });
   });
 
   it("displays upvote count", () => {
-    cy.visit("/");
+    cy.visit(TEST_IDEAS_PATH);
     cy.get('[data-testid="idea-item"]').first().within(() => {
       cy.get('[data-testid="upvote-count"]').should("exist");
     });
   });
 
   it("increments upvote count when clicked", () => {
-    cy.visit("/");
+    cy.visit(TEST_IDEAS_PATH);
     cy.get('[data-testid="idea-item"]')
       .first()
       .within(() => {
@@ -32,19 +34,19 @@ describe("Idea Upvoting", () => {
   });
 
   it("has sort by upvotes option", () => {
-    cy.visit("/");
+    cy.visit(TEST_IDEAS_PATH);
     cy.get('[data-testid="sort-dropdown"]').select("upvotes");
     cy.get('[data-testid="sort-dropdown"]').should("have.value", "upvotes");
   });
 
   it("updates URL when sorting by upvotes", () => {
-    cy.visit("/");
+    cy.visit(TEST_IDEAS_PATH);
     cy.get('[data-testid="sort-dropdown"]').select("upvotes");
     cy.url().should("include", "sort=upvotes");
   });
 
   it("sorts ideas by upvotes descending", () => {
-    cy.visit("/?sort=upvotes");
+    cy.visit(`${TEST_IDEAS_PATH}?sort=upvotes`);
     cy.get('[data-testid="upvote-count"]').then(($counts) => {
       const counts = [...$counts].map((el) => parseInt(el.textContent || "0", 10));
       const sortedCounts = [...counts].sort((a, b) => b - a);
@@ -53,7 +55,7 @@ describe("Idea Upvoting", () => {
   });
 
   it("persists upvote count after page refresh", () => {
-    cy.visit("/");
+    cy.visit(TEST_IDEAS_PATH);
 
     cy.get('[data-testid="idea-item"]').first().as("firstIdea");
     cy.get("@firstIdea").find('[data-testid="idea-name"]').invoke("text").as("ideaName");

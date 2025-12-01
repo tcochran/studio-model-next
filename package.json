@@ -11,18 +11,22 @@
     "cypress:run": "cypress run",
     "test:e2e": "start-server-and-test start http://localhost:3000 cypress:run",
     "pretest:e2e": "rm -rf cypress/report && npm run build",
-    "posttest:e2e": "npx mochawesome-merge cypress/report/*.json > cypress/report/combined.json && npx marge cypress/report/combined.json -f report -o cypress/report"
+    "posttest:e2e": "npx mochawesome-merge cypress/report/*.json > cypress/report/combined.json && npx marge cypress/report/combined.json -f report -o cypress/report",
+    "seed:portfolios": "tsx scripts/seed-portfolios.ts"
   },
   "dependencies": {
     "@aws-amplify/adapter-nextjs": "^1.6.11",
     "aws-amplify": "^6.15.8",
     "next": "15.3.5",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-markdown": "^10.1.0",
+    "remark-breaks": "^4.0.0"
   },
   "devDependencies": {
     "@aws-amplify/backend": "^1.18.0",
     "@aws-amplify/backend-cli": "^1.8.0",
+    "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^22",
     "@types/react": "^18",
@@ -31,7 +35,6 @@
     "constructs": "^10.4.3",
     "cypress": "^15.7.0",
     "esbuild": "^0.27.0",
-    "@eslint/eslintrc": "^3",
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
     "mochawesome": "^7.1.4",

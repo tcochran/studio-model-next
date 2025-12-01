@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { generateClient } from "aws-amplify/data";
@@ -48,44 +48,45 @@ export default function IdeasList({
   ideas: initialIdeas,
   currentSort,
   currentFilter,
+  portfolioCode,
+  productCode,
 }: {
   ideas: Idea[];
   currentSort: SortField;
   currentFilter: FilterField;
+  portfolioCode?: string;
+  productCode?: string;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [ideas, setIdeas] = useState(initialIdeas);
   const client = useMemo(() => generateClient<Schema>(), []);
-  const isFirstRender = useRef(true);
-  const prevSort = useRef(currentSort);
-  const prevFilter = useRef(currentFilter);
 
-  // Sync local state when sort/filter changes (server returns new data order)
-  // Skip the first render to avoid overwriting state during hydration
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-    // Only sync if sort or filter actually changed
-    if (prevSort.current !== currentSort || prevFilter.current !== currentFilter) {
-      setIdeas(initialIdeas);
-      prevSort.current = currentSort;
-      prevFilter.current = currentFilter;
-    }
-  }, [currentSort, currentFilter, initialIdeas]);
+  // Base path for links (scoped or root)
+  const basePath = portfolioCode && productCode
+    ? `/${portfolioCode}/${productCode}/ideas`
+    : "";
+
+  // Track local upvote changes separately from server data
+  const [upvoteOverrides, setUpvoteOverrides] = useState<Record<string, number>>({});
+
+  // Merge server data with local upvote overrides
+  const ideas = useMemo(() =>
+    initialIdeas.map(idea => ({
+      ...idea,
+      upvotes: upvoteOverrides[idea.id] ?? idea.upvotes,
+    })),
+    [initialIdeas, upvoteOverrides]
+  );
 
   const handleUpvote = async (ideaId: string) => {
     const idea = ideas.find((i) => i.id === ideaId);
     if (!idea) return;
 
     const newUpvotes = (idea.upvotes || 0) + 1;
+    const oldUpvotes = idea.upvotes || 0;
 
     // Optimistic update
-    setIdeas((prev) =>
-      prev.map((i) => (i.id === ideaId ? { ...i, upvotes: newUpvotes } : i))
-    );
+    setUpvoteOverrides(prev => ({ ...prev, [ideaId]: newUpvotes }));
 
     // Update in database
     try {
@@ -96,16 +97,15 @@ export default function IdeasList({
     } catch (error) {
       console.error("Failed to update upvotes:", error);
       // Revert optimistic update on error
-      setIdeas((prev) =>
-        prev.map((i) => (i.id === ideaId ? { ...i, upvotes: (idea.upvotes || 0) } : i))
-      );
+      setUpvoteOverrides(prev => ({ ...prev, [ideaId]: oldUpvotes }));
     }
   };
 
   const handleSortChange = (newSort: string) => {
     const params = new URLSearchParams(searchParams);
     params.set("sort", newSort);
-    router.push(`/?${params.toString()}`);
+    const path = basePath || "/";
+    router.push(`${path}?${params.toString()}`);
     router.refresh();
   };
 
@@ -116,7 +116,8 @@ export default function IdeasList({
     } else {
       params.set("filter", newFilter);
     }
-    router.push(`/?${params.toString()}`);
+    const path = basePath || "/";
+    router.push(`${path}?${params.toString()}`);
     router.refresh();
   };
 
@@ -219,7 +220,7 @@ export default function IdeasList({
                 </td>
                 <td className="px-4 py-3 text-zinc-900 dark:text-white" data-testid="idea-name">
                   <Link
-                    href={`/ideas/${idea.id}`}
+                    href={basePath ? `${basePath}/${idea.id}` : `/ideas/${idea.id}`}
                     className="hover:text-blue-600 dark:hover:text-blue-400 hover:underline"
                   >
                     {idea.name}

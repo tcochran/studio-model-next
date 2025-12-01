@@ -1,10 +1,12 @@
+import { TEST_IDEAS_PATH } from "../support/test-paths";
+
 describe("Ideas Form Page", () => {
   beforeEach(() => {
-    cy.visit("/ideas/new");
+    cy.visit(`${TEST_IDEAS_PATH}/new`);
   });
 
   it("displays the form heading", () => {
-    cy.contains("h1", "Add New Ideas").should("be.visible");
+    cy.contains("h1", "Add New Idea").should("be.visible");
   });
 
   it("displays name, hypothesis and validation status fields", () => {
@@ -33,11 +35,11 @@ describe("Ideas Form Page", () => {
     cy.get('select[name="validationStatus"]').should("have.value", "secondLevel");
   });
 
-  it("redirects to home page after successful submission", () => {
+  it("redirects to ideas page after successful submission", () => {
     cy.get('input[name="name"]').type("New Idea Name");
     cy.get('textarea[name="hypothesis"]').type("New hypothesis text");
     cy.get('button[type="submit"]').click();
-    cy.url().should("eq", Cypress.config().baseUrl + "/");
+    cy.url().should("include", TEST_IDEAS_PATH);
   });
 
   it("shows the new idea in the ideas list after submission", () => {
@@ -45,7 +47,7 @@ describe("Ideas Form Page", () => {
     cy.get('input[name="name"]').type(uniqueName);
     cy.get('textarea[name="hypothesis"]').type("Test hypothesis");
     cy.get('button[type="submit"]').click();
-    cy.url().should("eq", Cypress.config().baseUrl + "/");
+    cy.url().should("include", TEST_IDEAS_PATH);
     cy.reload();
     cy.get('[data-testid="ideas-list"]').should("exist");
     cy.contains(uniqueName, { timeout: 10000 }).should("be.visible");

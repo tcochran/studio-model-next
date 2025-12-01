@@ -10,4 +10,14 @@ This application implements the Studio Model, where idea creation, validation, a
 * Team we have to define the cross functional team members, they have first name, last name and role
 * tasks have an owner which can be multiple team members 
 * There should be a form to enter an idea, this should allow me to integrate with an agent to help me generate and refine the idea 
+* It should operate like an overlay onto project management system, tracking how products are doing and using this to generate, schedule and prioritie the tasks teams (or agents) should be doing
+* Tasks should either be 
+    * Product Flow – lightweight task management (LTM)
+    * Github
+    * Jira
+* A Source should be a confirgurable thing it is important to take data around it 
+    * A team member – which team member?
+    * A bug/issue – the ticket for it, who submitted it?
+    * A customer ask/feedback – which customer?
+
 

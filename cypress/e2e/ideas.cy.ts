@@ -1,11 +1,13 @@
+import { TEST_IDEAS_PATH } from "../support/test-paths";
+
 describe("Ideas Page", () => {
   it("displays the heading", () => {
-    cy.visit("/");
+    cy.visit(TEST_IDEAS_PATH);
     cy.contains("h1", "Idea Backlog").should("be.visible");
   });
 
   it("displays ideas table with correct columns", () => {
-    cy.visit("/");
+    cy.visit(TEST_IDEAS_PATH);
     cy.get('[data-testid="ideas-list"]').should("exist");
     cy.contains("th", "Name").should("be.visible");
     cy.contains("th", "Hypothesis").should("be.visible");
@@ -13,13 +15,13 @@ describe("Ideas Page", () => {
   });
 
   it("displays ideas from the database", () => {
-    cy.visit("/");
+    cy.visit(TEST_IDEAS_PATH);
     cy.get('[data-testid="ideas-list"]').should("exist");
     cy.get('[data-testid="idea-item"]').should("have.length.at.least", 1);
   });
 
   it("shows idea hypothesis, name and status", () => {
-    cy.visit("/");
+    cy.visit(TEST_IDEAS_PATH);
     cy.get('[data-testid="idea-item"]').first().within(() => {
       cy.get('[data-testid="idea-hypothesis"]').should("not.be.empty");
       cy.get('[data-testid="idea-name"]').should("not.be.empty");
@@ -27,14 +29,14 @@ describe("Ideas Page", () => {
   });
 
   it("has a link to add new idea", () => {
-    cy.visit("/");
+    cy.visit(TEST_IDEAS_PATH);
     cy.contains("a", "+ New Idea").should("be.visible");
     cy.contains("a", "+ New Idea").click();
-    cy.url().should("include", "/ideas/new");
+    cy.url().should("include", `${TEST_IDEAS_PATH}/new`);
   });
 
   it("displays a sort dropdown with options", () => {
-    cy.visit("/");
+    cy.visit(TEST_IDEAS_PATH);
     cy.get('[data-testid="sort-dropdown"]').should("be.visible");
     cy.get('[data-testid="sort-dropdown"]').select("name");
     cy.get('[data-testid="sort-dropdown"]').should("have.value", "name");
@@ -47,7 +49,7 @@ describe("Ideas Page", () => {
   });
 
   it("updates URL when sort option changes", () => {
-    cy.visit("/");
+    cy.visit(TEST_IDEAS_PATH);
     cy.get('[data-testid="sort-dropdown"]').select("name");
     cy.url().should("include", "?sort=name");
     cy.get('[data-testid="sort-dropdown"]').select("validationStatus");
@@ -55,14 +57,14 @@ describe("Ideas Page", () => {
   });
 
   it("persists sort option on page refresh", () => {
-    cy.visit("/?sort=name");
+    cy.visit(`${TEST_IDEAS_PATH}?sort=name`);
     cy.get('[data-testid="sort-dropdown"]').should("have.value", "name");
     cy.reload();
     cy.get('[data-testid="sort-dropdown"]').should("have.value", "name");
   });
 
   it("sorts ideas by name alphabetically", () => {
-    cy.visit("/?sort=name");
+    cy.visit(`${TEST_IDEAS_PATH}?sort=name`);
     cy.get('[data-testid="idea-name"]').then(($names) => {
       const names = [...$names].map((el) => el.textContent || "");
       const sortedNames = [...names].sort((a, b) => a.localeCompare(b));
@@ -71,7 +73,7 @@ describe("Ideas Page", () => {
   });
 
   it("displays a filter dropdown with options", () => {
-    cy.visit("/");
+    cy.visit(TEST_IDEAS_PATH);
     cy.get('[data-testid="filter-dropdown"]').should("be.visible");
     cy.get('[data-testid="filter-dropdown"]').select("firstLevel");
     cy.get('[data-testid="filter-dropdown"]').should("have.value", "firstLevel");
@@ -84,7 +86,7 @@ describe("Ideas Page", () => {
   });
 
   it("updates URL when filter option changes", () => {
-    cy.visit("/");
+    cy.visit(TEST_IDEAS_PATH);
     cy.get('[data-testid="filter-dropdown"]').select("firstLevel");
     cy.url().should("include", "?filter=firstLevel");
     cy.get('[data-testid="filter-dropdown"]').select("secondLevel");
@@ -92,14 +94,14 @@ describe("Ideas Page", () => {
   });
 
   it("persists filter option on page refresh", () => {
-    cy.visit("/?filter=firstLevel");
+    cy.visit(`${TEST_IDEAS_PATH}?filter=firstLevel`);
     cy.get('[data-testid="filter-dropdown"]').should("have.value", "firstLevel");
     cy.reload();
     cy.get('[data-testid="filter-dropdown"]').should("have.value", "firstLevel");
   });
 
   it("filters ideas by validation status", () => {
-    cy.visit("/?filter=firstLevel");
+    cy.visit(`${TEST_IDEAS_PATH}?filter=firstLevel`);
     cy.get('[data-testid="idea-item"]').should("have.length.at.least", 1);
     cy.get('[data-testid="idea-item"]').each(($item) => {
       cy.wrap($item).find('[data-testid="idea-status"]').should("contain", "First Level");
@@ -107,21 +109,21 @@ describe("Ideas Page", () => {
   });
 
   it("preserves sort when changing filter", () => {
-    cy.visit("/?sort=name");
+    cy.visit(`${TEST_IDEAS_PATH}?sort=name`);
     cy.get('[data-testid="filter-dropdown"]').select("firstLevel");
     cy.url().should("include", "sort=name");
     cy.url().should("include", "filter=firstLevel");
   });
 
   it("preserves filter when changing sort", () => {
-    cy.visit("/?filter=firstLevel");
+    cy.visit(`${TEST_IDEAS_PATH}?filter=firstLevel`);
     cy.get('[data-testid="sort-dropdown"]').select("name");
     cy.url().should("include", "filter=firstLevel");
     cy.url().should("include", "sort=name");
   });
 
   it("updates displayed ideas when sort dropdown changes without refresh", () => {
-    cy.visit("/");
+    cy.visit(TEST_IDEAS_PATH);
 
     // Change to sort by name
     cy.get('[data-testid="sort-dropdown"]').select("name");
@@ -138,7 +140,7 @@ describe("Ideas Page", () => {
   });
 
   it("updates displayed ideas when filter dropdown changes without refresh", () => {
-    cy.visit("/");
+    cy.visit(TEST_IDEAS_PATH);
 
     // Change to filter by firstLevel
     cy.get('[data-testid="filter-dropdown"]').select("firstLevel");

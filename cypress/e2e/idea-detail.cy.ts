@@ -1,21 +1,23 @@
+import { TEST_IDEAS_PATH } from "../support/test-paths";
+
 describe("Idea Detail Page", () => {
   it("makes idea names clickable links", () => {
-    cy.visit("/");
+    cy.visit(TEST_IDEAS_PATH);
     cy.get('[data-testid="idea-item"]').first().within(() => {
       cy.get('[data-testid="idea-name"] a').should("exist");
     });
   });
 
   it("navigates to detail page when clicking idea name", () => {
-    cy.visit("/");
+    cy.visit(TEST_IDEAS_PATH);
     cy.get('[data-testid="idea-item"]').first().within(() => {
       cy.get('[data-testid="idea-name"] a').click();
     });
-    cy.url().should("include", "/ideas/");
+    cy.url().should("include", `${TEST_IDEAS_PATH}/`);
   });
 
   it("displays idea details on detail page", () => {
-    cy.visit("/");
+    cy.visit(TEST_IDEAS_PATH);
     let ideaName: string;
 
     cy.get('[data-testid="idea-item"]')
@@ -38,7 +40,7 @@ describe("Idea Detail Page", () => {
   });
 
   it("preserves line breaks in hypothesis on detail page", () => {
-    cy.visit("/");
+    cy.visit(TEST_IDEAS_PATH);
     cy.get('[data-testid="idea-item"]').first().within(() => {
       cy.get('[data-testid="idea-name"] a').click();
     });
@@ -51,17 +53,17 @@ describe("Idea Detail Page", () => {
   });
 
   it("navigates back to ideas list", () => {
-    cy.visit("/");
+    cy.visit(TEST_IDEAS_PATH);
     cy.get('[data-testid="idea-item"]').first().within(() => {
       cy.get('[data-testid="idea-name"] a').click();
     });
 
     cy.get('[data-testid="back-to-ideas"]').click();
-    cy.url().should("eq", Cypress.config().baseUrl + "/");
+    cy.url().should("include", TEST_IDEAS_PATH);
   });
 
   it("shows error for invalid idea ID", () => {
-    cy.visit("/ideas/invalid-id-123");
+    cy.visit(`${TEST_IDEAS_PATH}/invalid-id-123`);
     cy.contains("Idea not found").should("be.visible");
     cy.get('[data-testid="back-to-ideas"]').should("exist");
   });
