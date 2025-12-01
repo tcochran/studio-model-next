@@ -69,4 +69,54 @@ describe("Ideas Page", () => {
       expect(names).to.deep.equal(sortedNames);
     });
   });
+
+  it("displays a filter dropdown with options", () => {
+    cy.visit("/");
+    cy.get('[data-testid="filter-dropdown"]').should("be.visible");
+    cy.get('[data-testid="filter-dropdown"]').select("firstLevel");
+    cy.get('[data-testid="filter-dropdown"]').should("have.value", "firstLevel");
+    cy.get('[data-testid="filter-dropdown"]').select("secondLevel");
+    cy.get('[data-testid="filter-dropdown"]').should("have.value", "secondLevel");
+    cy.get('[data-testid="filter-dropdown"]').select("scaling");
+    cy.get('[data-testid="filter-dropdown"]').should("have.value", "scaling");
+    cy.get('[data-testid="filter-dropdown"]').select("all");
+    cy.get('[data-testid="filter-dropdown"]').should("have.value", "all");
+  });
+
+  it("updates URL when filter option changes", () => {
+    cy.visit("/");
+    cy.get('[data-testid="filter-dropdown"]').select("firstLevel");
+    cy.url().should("include", "?filter=firstLevel");
+    cy.get('[data-testid="filter-dropdown"]').select("secondLevel");
+    cy.url().should("include", "?filter=secondLevel");
+  });
+
+  it("persists filter option on page refresh", () => {
+    cy.visit("/?filter=firstLevel");
+    cy.get('[data-testid="filter-dropdown"]').should("have.value", "firstLevel");
+    cy.reload();
+    cy.get('[data-testid="filter-dropdown"]').should("have.value", "firstLevel");
+  });
+
+  it("filters ideas by validation status", () => {
+    cy.visit("/?filter=firstLevel");
+    cy.get('[data-testid="idea-item"]').should("have.length.at.least", 1);
+    cy.get('[data-testid="idea-item"]').each(($item) => {
+      cy.wrap($item).find('[data-testid="idea-status"]').should("contain", "First Level");
+    });
+  });
+
+  it("preserves sort when changing filter", () => {
+    cy.visit("/?sort=name");
+    cy.get('[data-testid="filter-dropdown"]').select("firstLevel");
+    cy.url().should("include", "sort=name");
+    cy.url().should("include", "filter=firstLevel");
+  });
+
+  it("preserves filter when changing sort", () => {
+    cy.visit("/?filter=firstLevel");
+    cy.get('[data-testid="sort-dropdown"]').select("name");
+    cy.url().should("include", "filter=firstLevel");
+    cy.url().should("include", "sort=name");
+  });
 });

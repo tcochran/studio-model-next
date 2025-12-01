@@ -5,6 +5,7 @@ import IdeasList from "./IdeasList";
 export const dynamic = "force-dynamic";
 
 type SortField = "name" | "validationStatus" | "age" | "ageOldest";
+type FilterField = "all" | "firstLevel" | "secondLevel" | "scaling";
 
 const statusOrder: Record<string, number> = {
   firstLevel: 1,
@@ -15,19 +16,25 @@ const statusOrder: Record<string, number> = {
 export default async function Home({
   searchParams,
 }: {
-  searchParams: Promise<{ sort?: string }>;
+  searchParams: Promise<{ sort?: string; filter?: string }>;
 }) {
   const params = await searchParams;
   const sortBy = (params.sort as SortField) || "age";
+  const filterBy = (params.filter as FilterField) || "all";
 
   let ideas: NonNullable<Awaited<ReturnType<typeof cookiesClient.models.Idea.list>>["data"]> = [];
   let fetchError: string | null = null;
 
   try {
-    // Fetch with database-level sorting for age
+    // Fetch with database-level filtering using GSI (if filtered)
     let result;
 
-    if (sortBy === "age") {
+    if (filterBy !== "all") {
+      // Use GSI query for filtering by validationStatus
+      result = await cookiesClient.models.Idea.listIdeaByValidationStatus({
+        validationStatus: filterBy,
+      });
+    } else if (sortBy === "age") {
       // Sort by createdAt descending (newest first) - database level
       result = await cookiesClient.models.Idea.list({
         sortDirection: "DESC",
@@ -38,8 +45,7 @@ export default async function Home({
         sortDirection: "ASC",
       });
     } else {
-      // For name and validationStatus, fetch all and sort in-memory
-      // Note: GSIs exist but are for partition key queries, not full scans
+      // For name and validationStatus sorting, fetch all and sort in-memory
       result = await cookiesClient.models.Idea.list();
     }
 
@@ -81,7 +87,7 @@ export default async function Home({
           </div>
         )}
 
-        {!fetchError && ideas.length > 0 ? (
+        {!fetchError ? (
           <IdeasList
             ideas={ideas.map((idea) => ({
               id: idea.id,
@@ -91,14 +97,8 @@ export default async function Home({
               createdAt: idea.createdAt,
             }))}
             currentSort={sortBy}
+            currentFilter={filterBy}
           />
-        ) : !fetchError ? (
-          <p
-            className="text-zinc-600 dark:text-zinc-400"
-            data-testid="no-ideas"
-          >
-            No ideas yet. Add your first idea!
-          </p>
         ) : null}
       </main>
     </div>
