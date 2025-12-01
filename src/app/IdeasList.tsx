@@ -218,7 +218,7 @@ export default function IdeasList({
                 <td className="px-4 py-3 text-zinc-500 dark:text-zinc-400 text-sm" data-testid="idea-age" suppressHydrationWarning>
                   {formatRelativeTime(idea.createdAt)}
                 </td>
-                <td className="px-4 py-3 text-zinc-900 dark:text-white" data-testid="idea-name">
+                <td className="px-4 py-3 text-sm text-zinc-900 dark:text-white" data-testid="idea-name">
                   <Link
                     href={basePath ? `${basePath}/${idea.id}` : `/ideas/${idea.id}`}
                     className="hover:text-blue-600 dark:hover:text-blue-400 hover:underline"
@@ -226,7 +226,7 @@ export default function IdeasList({
                     {idea.name}
                   </Link>
                 </td>
-                <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400" data-testid="idea-hypothesis">
+                <td className="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-400" data-testid="idea-hypothesis">
                   <div className="whitespace-pre-wrap line-clamp-3">
                     {idea.hypothesis}
                   </div>
