@@ -77,7 +77,22 @@ export default function NewIdeaPage() {
     setIsSubmitting(true);
 
     try {
+      // Get the next idea number for this product
+      const existingIdeas = await client.models.Idea.list({
+        filter: {
+          portfolioCode: { eq: portfolioCode },
+          productCode: { eq: productCode },
+        },
+      });
+
+      const maxIdeaNumber = existingIdeas.data?.reduce((max, idea) => {
+        return Math.max(max, idea.ideaNumber || 0);
+      }, 0) || 0;
+
+      const nextIdeaNumber = maxIdeaNumber + 1;
+
       await client.models.Idea.create({
+        ideaNumber: nextIdeaNumber,
         name: name.trim(),
         hypothesis: hypothesis.trim(),
         validationStatus,

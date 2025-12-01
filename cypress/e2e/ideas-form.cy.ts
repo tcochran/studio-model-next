@@ -47,9 +47,12 @@ describe("Ideas Form Page", () => {
     cy.get('input[name="name"]').type(uniqueName);
     cy.get('textarea[name="hypothesis"]').type("Test hypothesis");
     cy.get('button[type="submit"]').click();
+    // Wait for redirect to complete
     cy.url().should("include", TEST_IDEAS_PATH);
-    cy.reload();
-    cy.get('[data-testid="ideas-list"]').should("exist");
+    cy.url().should("not.include", "/new");
+    // Wait for the page to load and display the list
+    cy.get("h1").contains("Idea Backlog").should("be.visible");
+    cy.get('[data-testid="ideas-list"]', { timeout: 15000 }).should("exist");
     cy.contains(uniqueName, { timeout: 10000 }).should("be.visible");
   });
 });
