@@ -91,7 +91,7 @@ export default async function ScopedIdeasPage({
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-black">
       <nav className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-        <div className="mx-auto max-w-5xl px-4 py-3 flex items-center">
+        <div className="mx-auto max-w-7xl px-4 py-3 flex items-center">
           <div className="flex gap-2">
             <Link
               href={`/portfolios/${portfolioCode}`}
@@ -120,7 +120,7 @@ export default async function ScopedIdeasPage({
         </div>
       </nav>
 
-      <main className="mx-auto max-w-5xl px-4 py-8">
+      <main className="mx-auto max-w-7xl px-4 py-8">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold text-black dark:text-white">
             Idea Backlog

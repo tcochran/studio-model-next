@@ -119,13 +119,21 @@ export default async function FunnelPage({
           <h1 className="text-3xl font-bold text-black dark:text-white">
             Idea Funnel
           </h1>
-          <Link
-            href={basePath}
-            data-testid="list-view-link"
-            className="inline-flex items-center px-4 py-2 bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white rounded-lg text-sm font-medium"
-          >
-            List View
-          </Link>
+          <div className="flex gap-2">
+            <Link
+              href={basePath}
+              data-testid="list-view-link"
+              className="inline-flex items-center px-4 py-2 bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white rounded-lg text-sm font-medium"
+            >
+              List View
+            </Link>
+            <Link
+              href={`${basePath}/new`}
+              className="px-4 py-2 bg-[rgb(247,71,64)] hover:bg-[rgb(227,51,44)] text-white rounded-lg text-sm font-medium"
+            >
+              + New Idea
+            </Link>
+          </div>
         </div>
 
         {error && (
