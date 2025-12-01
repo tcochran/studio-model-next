@@ -67,6 +67,11 @@ studio-model-next/
 - For writing, never use emdashes
 - Update this file as the project structure and conventions evolve
 
+### Git Workflow
+- When committing, always commit all changed files or clean them up
+- Git status should be empty after a commit (no unstaged or untracked files related to the work)
+- Never leave partial changes uncommitted
+
 ---
 
 *Last updated: 2025-12-01*
