@@ -235,7 +235,7 @@ export default function IdeasList({
                 <td className="px-4 py-3 text-center" data-testid="idea-status">
                   {idea.validationStatus && (
                     <span
-                      className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${statusColors[idea.validationStatus] || "bg-zinc-100 text-zinc-800"}`}
+                      className={`inline-flex px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap ${statusColors[idea.validationStatus] || "bg-zinc-100 text-zinc-800"}`}
                     >
                       {statusLabels[idea.validationStatus] || idea.validationStatus}
                     </span>
@@ -244,7 +244,7 @@ export default function IdeasList({
                 <td className="px-4 py-3 text-center" data-testid="idea-source">
                   {idea.source && (
                     <span
-                      className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${sourceColor}`}
+                      className={`inline-flex px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap ${sourceColor}`}
                     >
                       {sourceLabels[idea.source] || idea.source}
                     </span>
