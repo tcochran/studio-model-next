@@ -3,13 +3,13 @@ backend:
   phases:
     build:
       commands:
-        - npm ci --legacy-peer-deps
+        - npm ci
         - npx ampx pipeline-deploy --branch $AWS_BRANCH --app-id $AWS_APP_ID
 frontend:
   phases:
     preBuild:
       commands:
-        - npm ci --legacy-peer-deps
+        - npm ci
     build:
       commands:
         - npm run build
@@ -25,7 +25,7 @@ test:
   phases:
     preTest:
       commands:
-        - npm ci --legacy-peer-deps
+        - npm ci
         - npm run build
     test:
       commands:
