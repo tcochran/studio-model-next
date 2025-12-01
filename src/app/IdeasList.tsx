@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "../../amplify/data/resource";
+import { formatRelativeTime } from "../utils/formatRelativeTime";
 
 type Idea = {
   id: string;
@@ -154,6 +155,9 @@ export default function IdeasList({
           <thead>
             <tr className="border-b border-zinc-200 dark:border-zinc-800">
               <th className="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-white">
+                Age
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-white">
                 Name
               </th>
               <th className="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-white">
@@ -174,6 +178,9 @@ export default function IdeasList({
                 className="border-b border-zinc-100 dark:border-zinc-800 last:border-0 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
                 data-testid="idea-item"
               >
+                <td className="px-4 py-3 text-zinc-500 dark:text-zinc-400 text-sm" data-testid="idea-age" suppressHydrationWarning>
+                  {formatRelativeTime(idea.createdAt)}
+                </td>
                 <td className="px-4 py-3 text-zinc-900 dark:text-white" data-testid="idea-name">
                   <Link
                     href={`/ideas/${idea.id}`}
@@ -206,7 +213,7 @@ export default function IdeasList({
                     </span>
                     <button
                       onClick={() => handleUpvote(idea.id)}
-                      className="px-2 py-1 text-xs font-medium rounded bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 transition-colors"
+                      className="px-2 py-1 text-xs font-medium rounded bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 transition-colors cursor-pointer"
                       data-testid="upvote-button"
                     >
                       +1

@@ -1,6 +1,6 @@
 # Spec 11: Idea Age Column
 
-**Status:** Not Started
+**Status:** Complete
 **Created:** 2025-12-01
 
 ## Overview
