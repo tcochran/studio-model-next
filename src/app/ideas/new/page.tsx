@@ -1,13 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "../../../../amplify/data/resource";
 
-const client = generateClient<Schema>();
-
 export default function NewIdeaPage() {
+  const client = useMemo(() => generateClient<Schema>(), []);
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -31,6 +30,7 @@ export default function NewIdeaPage() {
         description: description.trim(),
       });
       router.push("/");
+      router.refresh();
     } catch (error) {
       console.error("Error creating idea:", error);
       setIsSubmitting(false);
