@@ -2,19 +2,22 @@
 
 ## Project Overview
 
-**Project Name:** studio-model
+**Project Name:** studio-model-next
 
 This file provides context and guidelines for AI assistants working in this codebase.
 
 ## Project Structure
 
 ```
-studio-model/
-├── app/                  # SvelteKit frontend application
-├── infra/                # AWS CDK infrastructure (Amplify deployment)
+studio-model-next/
+├── amplify/              # AWS Amplify Gen 2 backend (data schema, auth)
+├── src/
+│   ├── app/              # Next.js App Router pages
+│   └── utils/            # Utility functions (Amplify server utils)
+├── cypress/              # Cypress E2E tests
+│   └── e2e/              # Test specs
 ├── spec/                 # Technical specifications and documentation
-├── docs/                 # Project documentation
-└── CLAUDE.MD             # This file
+└── claude.md             # This file
 ```
 
 ## Development Guidelines
@@ -41,29 +44,29 @@ studio-model/
 - Uses Cypress with mochawesome reporter for E2E tests
 - Tests are in `cypress/e2e/`
 - **Important:** Always unset `ELECTRON_RUN_AS_NODE` before running Cypress tests (required when running from VSCode)
-- Run headless: `unset ELECTRON_RUN_AS_NODE && npm run cypress:run`
-- Interactive mode: `unset ELECTRON_RUN_AS_NODE && npm run cypress`
+- Run headless: `unset ELECTRON_RUN_AS_NODE && npx cypress run`
+- Interactive mode: `unset ELECTRON_RUN_AS_NODE && npx cypress open`
 - CI/CD runs tests automatically on every deployment via Amplify test phase
 
+### Local Development
+- Run dev server: `npm run dev`
+- Run Amplify sandbox for local backend: `npx ampx sandbox`
+
 ### Dependencies
-- Frontend: SvelteKit, Svelte 5, Vite
+- Frontend: Next.js 15, React 19, Tailwind CSS
+- Backend: AWS Amplify Gen 2 (AppSync GraphQL, DynamoDB)
 - Testing: Cypress, mochawesome
-- Infrastructure: AWS CDK, AWS Amplify
+- Hosting: AWS Amplify Hosting
 
 ## Important Notes
 
 - This project uses TDD (Test-Driven Development)
 - Never write functionality without tests first
 - AWS Amplify auto-deploys on every push to main branch
-- Production URL: https://main.d24d3rnj7cl289.amplifyapp.com
+- Production URL: https://main.dok8rg7vk45b7.amplifyapp.com
+- For writing, never use emdashes
 - Update this file as the project structure and conventions evolve
-
-## Contact & Resources
-
-- (Add relevant links and contact information)
 
 ---
 
-*Last updated: 2025-11-30*
-- for writing never use emdashes
-- memory this project is going to implement a TDD approach, we can't write functionality without a test
+*Last updated: 2025-12-01*

@@ -1,27 +1,60 @@
 import { cookiesClient } from "../utils/amplify-server-utils";
 import Link from "next/link";
+import IdeasList from "./IdeasList";
 
 export const dynamic = "force-dynamic";
 
-const statusLabels: Record<string, string> = {
-  firstLevel: "First Level",
-  secondLevel: "Second Level",
-  scaling: "Scaling",
+type SortField = "name" | "validationStatus" | "age" | "ageOldest";
+
+const statusOrder: Record<string, number> = {
+  firstLevel: 1,
+  secondLevel: 2,
+  scaling: 3,
 };
 
-const statusColors: Record<string, string> = {
-  firstLevel: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  secondLevel: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
-  scaling: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-};
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ sort?: string }>;
+}) {
+  const params = await searchParams;
+  const sortBy = (params.sort as SortField) || "age";
 
-export default async function Home() {
   let ideas: NonNullable<Awaited<ReturnType<typeof cookiesClient.models.Idea.list>>["data"]> = [];
   let fetchError: string | null = null;
 
   try {
-    const result = await cookiesClient.models.Idea.list();
+    // Fetch with database-level sorting for age
+    let result;
+
+    if (sortBy === "age") {
+      // Sort by createdAt descending (newest first) - database level
+      result = await cookiesClient.models.Idea.list({
+        sortDirection: "DESC",
+      });
+    } else if (sortBy === "ageOldest") {
+      // Sort by createdAt ascending (oldest first) - database level
+      result = await cookiesClient.models.Idea.list({
+        sortDirection: "ASC",
+      });
+    } else {
+      // For name and validationStatus, fetch all and sort in-memory
+      // Note: GSIs exist but are for partition key queries, not full scans
+      result = await cookiesClient.models.Idea.list();
+    }
+
     ideas = result.data?.filter((idea) => idea && idea.name) ?? [];
+
+    // Sort in-memory for name and validationStatus
+    if (sortBy === "name") {
+      ideas.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+    } else if (sortBy === "validationStatus") {
+      ideas.sort((a, b) => {
+        const orderA = statusOrder[a.validationStatus || ""] || 99;
+        const orderB = statusOrder[b.validationStatus || ""] || 99;
+        return orderA - orderB;
+      });
+    }
   } catch (e) {
     console.error("Error fetching ideas:", e);
     fetchError = e instanceof Error ? e.message : "Unknown error fetching ideas";
@@ -49,48 +82,16 @@ export default async function Home() {
         )}
 
         {!fetchError && ideas.length > 0 ? (
-          <div className="overflow-x-auto" data-testid="ideas-list">
-            <table className="w-full bg-white dark:bg-zinc-900 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-800">
-              <thead>
-                <tr className="border-b border-zinc-200 dark:border-zinc-800">
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-white">
-                    Name
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-white">
-                    Hypothesis
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-white">
-                    Validation Status
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {ideas.map((idea) => (
-                  <tr
-                    key={idea.id}
-                    className="border-b border-zinc-100 dark:border-zinc-800 last:border-0 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
-                    data-testid="idea-item"
-                  >
-                    <td className="px-6 py-4 text-zinc-900 dark:text-white" data-testid="idea-name">
-                      {idea.name}
-                    </td>
-                    <td className="px-6 py-4 text-zinc-600 dark:text-zinc-400" data-testid="idea-hypothesis">
-                      {idea.hypothesis}
-                    </td>
-                    <td className="px-6 py-4" data-testid="idea-status">
-                      {idea.validationStatus && (
-                        <span
-                          className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${statusColors[idea.validationStatus] || "bg-zinc-100 text-zinc-800"}`}
-                        >
-                          {statusLabels[idea.validationStatus] || idea.validationStatus}
-                        </span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <IdeasList
+            ideas={ideas.map((idea) => ({
+              id: idea.id,
+              name: idea.name,
+              hypothesis: idea.hypothesis,
+              validationStatus: idea.validationStatus,
+              createdAt: idea.createdAt,
+            }))}
+            currentSort={sortBy}
+          />
         ) : !fetchError ? (
           <p
             className="text-zinc-600 dark:text-zinc-400"

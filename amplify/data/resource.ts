@@ -7,7 +7,11 @@ const schema = a.schema({
       hypothesis: a.string().required(),
       validationStatus: a.string(),
     })
-    .authorization((allow) => [allow.publicApiKey()]),
+    .authorization((allow) => [allow.publicApiKey()])
+    .secondaryIndexes((index) => [
+      index('name'),
+      index('validationStatus'),
+    ]),
 });
 
 export type Schema = ClientSchema<typeof schema>;
