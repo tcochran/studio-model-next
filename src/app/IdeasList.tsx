@@ -1,12 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "../../amplify/data/resource";
-
-const client = generateClient<Schema>();
 
 type Idea = {
   id: string;
@@ -44,6 +42,7 @@ export default function IdeasList({
   const router = useRouter();
   const searchParams = useSearchParams();
   const [ideas, setIdeas] = useState(initialIdeas);
+  const client = useMemo(() => generateClient<Schema>(), []);
 
   const handleUpvote = async (ideaId: string) => {
     const idea = ideas.find((i) => i.id === ideaId);
@@ -57,10 +56,18 @@ export default function IdeasList({
     );
 
     // Update in database
-    await client.models.Idea.update({
-      id: ideaId,
-      upvotes: newUpvotes,
-    });
+    try {
+      await client.models.Idea.update({
+        id: ideaId,
+        upvotes: newUpvotes,
+      });
+    } catch (error) {
+      console.error("Failed to update upvotes:", error);
+      // Revert optimistic update on error
+      setIdeas((prev) =>
+        prev.map((i) => (i.id === ideaId ? { ...i, upvotes: (idea.upvotes || 0) } : i))
+      );
+    }
   };
 
   const handleSortChange = (newSort: string) => {

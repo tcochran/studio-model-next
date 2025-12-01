@@ -51,6 +51,9 @@ studio-model-next/
 ### Local Development
 - Run dev server: `npm run dev`
 - Run Amplify sandbox for local backend: `npx ampx sandbox`
+- Local development uses the sandbox schema (separate from production)
+- After schema changes, regenerate local outputs: `npx ampx sandbox --once`
+- Safe to regenerate `amplify_outputs.json` locally without affecting production
 
 ### Dependencies
 - Frontend: Next.js 15, React 19, Tailwind CSS
