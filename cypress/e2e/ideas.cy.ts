@@ -177,7 +177,7 @@ describe("Ideas", () => {
       it("collapses row when clicked again", () => {
         cy.get('[data-testid="idea-item"]').first().click();
         cy.get('[data-testid="expanded-content"]').should("be.visible");
-        cy.get('[data-testid="idea-item"]').first().click();
+        cy.get('[data-testid="expanded-content"]').click();
         cy.get('[data-testid="expanded-content"]').should("not.exist");
       });
 
@@ -365,6 +365,216 @@ describe("Ideas", () => {
       cy.get("h1").contains("Idea Backlog").should("be.visible");
       cy.get('[data-testid="ideas-list"]', { timeout: 15000 }).should("exist");
       cy.contains(uniqueName, { timeout: 10000 }).should("be.visible");
+    });
+  });
+
+  describe("Edit Page", () => {
+    it("shows edit button on idea detail page", () => {
+      cy.visit(TEST_IDEAS_PATH);
+      cy.get('[data-testid="idea-item"]').first().within(() => {
+        cy.get('[data-testid="idea-name"] a').click();
+      });
+      cy.get('[data-testid="edit-idea-button"]').should("exist");
+    });
+
+    it("navigates to edit form when clicking edit button", () => {
+      cy.visit(TEST_IDEAS_PATH);
+      cy.get('[data-testid="idea-item"]').first().within(() => {
+        cy.get('[data-testid="idea-name"] a').click();
+      });
+      cy.get('[data-testid="edit-idea-button"]').click();
+      cy.url().should("include", "/edit");
+    });
+
+    it("pre-populates form with existing idea data", () => {
+      cy.visit(TEST_IDEAS_PATH);
+      let ideaName: string;
+      let ideaHypothesis: string;
+
+      cy.get('[data-testid="idea-item"]').first().within(() => {
+        cy.get('[data-testid="idea-name"]').invoke("text").then((text) => {
+          ideaName = text;
+        });
+        cy.get('[data-testid="idea-hypothesis"]').invoke("text").then((text) => {
+          ideaHypothesis = text.substring(0, 50);
+        });
+        cy.get('[data-testid="idea-name"] a').click();
+      });
+
+      cy.get('[data-testid="edit-idea-button"]').click();
+
+      cy.get('input[name="name"]').should(($input) => {
+        expect($input.val()).to.equal(ideaName);
+      });
+      cy.get('textarea[name="hypothesis"]').should(($textarea) => {
+        const value = $textarea.val() as string;
+        expect(value).to.include(ideaHypothesis);
+      });
+      cy.get('select[name="validationStatus"]').should("not.have.value", "");
+      cy.get('[data-testid="source-select"]').should("exist");
+    });
+
+    it("updates idea and shows updated data", () => {
+      const updatedName = "Updated Idea Name " + Date.now();
+      const updatedHypothesis = "This is an updated hypothesis for testing.";
+
+      cy.visit(TEST_IDEAS_PATH);
+      cy.get('[data-testid="idea-item"]').first().within(() => {
+        cy.get('[data-testid="idea-name"] a').click();
+      });
+      cy.get('[data-testid="edit-idea-button"]').click();
+
+      cy.get('input[name="name"]').clear().type(updatedName);
+      cy.get('textarea[name="hypothesis"]').clear().type(updatedHypothesis);
+      cy.get('select[name="validationStatus"]').select("secondLevel");
+
+      cy.get('button[type="submit"]').click();
+
+      cy.url().should("not.include", "/edit");
+      cy.get('[data-testid="idea-detail-name"]').should("contain", updatedName);
+      cy.get('[data-testid="idea-detail-hypothesis"]').should("contain", updatedHypothesis);
+      cy.get('[data-testid="idea-detail-status"]').should("contain", "Second Level");
+    });
+
+    it("shows validation errors for invalid data", () => {
+      cy.visit(TEST_IDEAS_PATH);
+      cy.get('[data-testid="idea-item"]').first().within(() => {
+        cy.get('[data-testid="idea-name"] a').click();
+      });
+      cy.get('[data-testid="edit-idea-button"]').click();
+
+      cy.get('input[name="name"]').clear();
+      cy.get('textarea[name="hypothesis"]').clear();
+
+      cy.get('button[type="submit"]').click();
+
+      cy.get('[data-testid="name-error"]').should("be.visible");
+      cy.get('[data-testid="hypothesis-error"]').should("be.visible");
+      cy.url().should("include", "/edit");
+    });
+
+    it("cancels edit and returns to detail view", () => {
+      cy.visit(TEST_IDEAS_PATH);
+      cy.get('[data-testid="idea-item"]').first().within(() => {
+        cy.get('[data-testid="idea-name"] a').click();
+      });
+
+      cy.get('[data-testid="edit-idea-button"]').click();
+      cy.url().should("include", "/edit");
+      cy.get('input[name="name"]').type(" Some Changes");
+
+      cy.get('[data-testid="cancel-button"]').click();
+
+      cy.url().should("not.include", "/edit");
+      cy.url().should(($url) => {
+        expect($url).to.include(`${TEST_IDEAS_PATH}/`);
+      });
+    });
+
+    it("shows error for invalid idea ID on edit page", () => {
+      cy.visit(`${TEST_IDEAS_PATH}/invalid-id-123/edit`);
+      cy.contains("Idea not found").should("be.visible");
+      cy.get('[data-testid="back-to-ideas"]').should("exist");
+    });
+  });
+
+  describe("Hide Expanded Row", () => {
+    it("hides collapsed row when expanded", () => {
+      cy.visit(TEST_IDEAS_PATH);
+
+      cy.get('[data-testid="idea-item"]').first().as("firstRow");
+
+      // Initially visible
+      cy.get("@firstRow").should("be.visible");
+
+      // Click to expand
+      cy.get("@firstRow").click();
+
+      // Row should be hidden
+      cy.get("@firstRow").should("not.be.visible");
+
+      // Expanded content should be visible
+      cy.get('[data-testid="expanded-content"]').should("be.visible");
+    });
+
+    it("shows collapsed row when collapsed again", () => {
+      cy.visit(TEST_IDEAS_PATH);
+
+      cy.get('[data-testid="idea-item"]').first().as("firstRow");
+
+      // Expand
+      cy.get("@firstRow").click();
+      cy.get("@firstRow").should("not.be.visible");
+
+      // Collapse by clicking expanded content
+      cy.get('[data-testid="expanded-content"]').click();
+
+      // Row should be visible again
+      cy.get("@firstRow").should("be.visible");
+      cy.get('[data-testid="expanded-content"]').should("not.exist");
+    });
+
+    it("only hides the expanded row, not others", () => {
+      cy.visit(TEST_IDEAS_PATH);
+
+      // Expand first row
+      cy.get('[data-testid="idea-item"]').first().click();
+
+      // First row hidden
+      cy.get('[data-testid="idea-item"]').first().should("not.be.visible");
+
+      // Other rows still visible
+      cy.get('[data-testid="idea-item"]').eq(1).should("be.visible");
+      cy.get('[data-testid="idea-item"]').eq(2).should("be.visible");
+    });
+
+    it("expanded content shows all idea data", () => {
+      cy.visit(TEST_IDEAS_PATH);
+
+      // Expand first row
+      cy.get('[data-testid="idea-item"]').first().click();
+
+      // Expanded content should show all data
+      cy.get('[data-testid="expanded-content"]').within(() => {
+        // Should have idea number
+        cy.contains("#").should("be.visible");
+        // Should have name as link
+        cy.get("a").should("exist");
+        // Should have hypothesis
+        cy.get('[data-testid="expanded-hypothesis"]').should("be.visible");
+        // Should have upvote button
+        cy.contains("+1").should("be.visible");
+        // Should have created date
+        cy.get('[data-testid="expanded-created"]').should("be.visible");
+      });
+    });
+
+    it("upvote button works in expanded view", () => {
+      cy.visit(TEST_IDEAS_PATH);
+
+      // Get initial upvote count
+      let initialCount: number;
+      cy.get('[data-testid="idea-item"]').first().within(() => {
+        cy.get('[data-testid="upvote-count"]').invoke("text").then((text) => {
+          initialCount = parseInt(text);
+        });
+      });
+
+      // Expand row
+      cy.get('[data-testid="idea-item"]').first().click();
+
+      // Click upvote in expanded view
+      cy.get('[data-testid="expanded-content"]').within(() => {
+        cy.contains("+1").click();
+      });
+
+      // Collapse and check count increased
+      cy.get('[data-testid="expanded-content"]').click();
+      cy.get('[data-testid="idea-item"]').first().within(() => {
+        cy.get('[data-testid="upvote-count"]').should(($count) => {
+          expect(parseInt($count.text())).to.equal(initialCount + 1);
+        });
+      });
     });
   });
 });

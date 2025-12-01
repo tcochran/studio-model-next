@@ -197,25 +197,25 @@ export default function IdeasList({
         <table className="w-full bg-white dark:bg-zinc-900 rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-800">
           <thead>
             <tr className="border-b border-zinc-200 dark:border-zinc-800">
-              <th className="px-4 py-3 text-right text-sm font-semibold text-zinc-900 dark:text-white w-12">
+              <th className="px-2 py-2 text-right text-sm font-semibold text-zinc-900 dark:text-white w-12">
                 #
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-white">
+              <th className="px-2 py-2 text-left text-sm font-semibold text-zinc-900 dark:text-white w-20">
                 Age
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-white">
+              <th className="px-2 py-2 text-left text-sm font-semibold text-zinc-900 dark:text-white">
                 Name
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-white">
+              <th className="px-2 py-2 text-left text-sm font-semibold text-zinc-900 dark:text-white">
                 Hypothesis
               </th>
-              <th className="px-4 py-3 text-center text-sm font-semibold text-zinc-900 dark:text-white">
+              <th className="px-2 py-2 text-center text-sm font-semibold text-zinc-900 dark:text-white">
                 Validation Status
               </th>
-              <th className="px-4 py-3 text-center text-sm font-semibold text-zinc-900 dark:text-white">
+              <th className="px-2 py-2 text-center text-sm font-semibold text-zinc-900 dark:text-white">
                 Source
               </th>
-              <th className="px-4 py-3 text-right text-sm font-semibold text-zinc-900 dark:text-white">
+              <th className="px-2 py-2 text-right text-sm font-semibold text-zinc-900 dark:text-white">
                 Votes
               </th>
             </tr>
@@ -225,16 +225,18 @@ export default function IdeasList({
               <Fragment key={idea.id}>
               <tr
                 onClick={() => handleRowClick(idea.id)}
-                className="border-b border-zinc-100 dark:border-zinc-800 last:border-0 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 cursor-pointer"
+                className={`border-b border-zinc-100 dark:border-zinc-800 last:border-0 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 cursor-pointer transition-opacity duration-200 ${
+                  expandedId === idea.id ? "hidden" : "opacity-100"
+                }`}
                 data-testid="idea-item"
               >
-                <td className="px-4 py-3 text-right text-sm text-zinc-500 dark:text-zinc-400" data-testid="idea-number">
+                <td className="px-2 py-2 text-right text-sm text-zinc-500 dark:text-zinc-400" data-testid="idea-number">
                   {idea.ideaNumber}
                 </td>
-                <td className="px-4 py-3 text-zinc-500 dark:text-zinc-400 text-sm" data-testid="idea-age" suppressHydrationWarning>
+                <td className="px-2 py-2 text-zinc-500 dark:text-zinc-400 text-sm" data-testid="idea-age" suppressHydrationWarning>
                   {formatRelativeTime(idea.createdAt)}
                 </td>
-                <td className="px-4 py-3 text-sm text-zinc-900 dark:text-white" data-testid="idea-name">
+                <td className="px-2 py-2 text-sm text-zinc-900 dark:text-white" data-testid="idea-name">
                   <Link
                     href={basePath ? `${basePath}/${idea.ideaNumber}` : `/ideas/${idea.ideaNumber}`}
                     className="hover:text-orange-600 dark:hover:text-orange-400 hover:underline"
@@ -243,12 +245,12 @@ export default function IdeasList({
                     {idea.name}
                   </Link>
                 </td>
-                <td className="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-400" data-testid="idea-hypothesis">
+                <td className="px-2 py-2 text-sm text-zinc-600 dark:text-zinc-400" data-testid="idea-hypothesis">
                   <div className="whitespace-pre-wrap line-clamp-3">
                     {idea.hypothesis}
                   </div>
                 </td>
-                <td className="px-4 py-3 text-center" data-testid="idea-status">
+                <td className="px-2 py-2 text-center" data-testid="idea-status">
                   {idea.validationStatus && (
                     <span
                       className={`inline-flex px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap ${statusColors[idea.validationStatus] || "bg-zinc-100 text-zinc-800"}`}
@@ -257,7 +259,7 @@ export default function IdeasList({
                     </span>
                   )}
                 </td>
-                <td className="px-4 py-3 text-center" data-testid="idea-source">
+                <td className="px-2 py-2 text-center" data-testid="idea-source">
                   {idea.source && (
                     <span
                       className={`inline-flex px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap ${sourceColor}`}
@@ -266,7 +268,7 @@ export default function IdeasList({
                     </span>
                   )}
                 </td>
-                <td className="px-4 py-3 text-right">
+                <td className="px-2 py-2 text-right">
                   <div className="flex items-center justify-end gap-2">
                     <span
                       className="text-sm text-zinc-600 dark:text-zinc-400"
@@ -288,50 +290,83 @@ export default function IdeasList({
                 </td>
               </tr>
               {expandedId === idea.id && (
-                <tr key={`${idea.id}-expanded`} data-testid="expanded-content">
-                  <td colSpan={7} className="px-8 py-4 bg-zinc-50 dark:bg-zinc-800/30 border-b border-zinc-200 dark:border-zinc-700">
-                    <div className="grid grid-cols-2 gap-4">
+                <tr
+                  key={`${idea.id}-expanded`}
+                  onClick={() => handleRowClick(idea.id)}
+                  className="cursor-pointer animate-slideDown border-b border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                  data-testid="expanded-content"
+                >
+                  <td colSpan={7} className="px-8 py-6 bg-zinc-50 dark:bg-zinc-800/30">
+                    <div className="space-y-4">
+                      {/* Header with idea number and name */}
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-baseline gap-3">
+                          <span className="text-lg font-semibold text-zinc-500 dark:text-zinc-400">
+                            #{idea.ideaNumber}
+                          </span>
+                          <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
+                            <Link
+                              href={basePath ? `${basePath}/${idea.ideaNumber}` : `/ideas/${idea.ideaNumber}`}
+                              className="hover:text-blue-600 dark:hover:text-blue-400 hover:underline"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {idea.name}
+                            </Link>
+                          </h3>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <div className="text-sm text-zinc-500 dark:text-zinc-400" suppressHydrationWarning>
+                            {formatRelativeTime(idea.createdAt)}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                              {idea.upvotes || 0}
+                            </span>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleUpvote(idea.id);
+                              }}
+                              className="px-2 py-1 text-xs font-medium rounded bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 transition-colors cursor-pointer"
+                            >
+                              +1
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Badges */}
+                      <div className="flex items-center gap-2">
+                        {idea.validationStatus && (
+                          <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap ${statusColors[idea.validationStatus] || "bg-zinc-100 text-zinc-800"}`}>
+                            {statusLabels[idea.validationStatus] || idea.validationStatus}
+                          </span>
+                        )}
+                        {idea.source && (
+                          <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap ${sourceColor}`}>
+                            {sourceLabels[idea.source] || idea.source}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Hypothesis */}
                       <div>
-                        <h4 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">Hypothesis</h4>
+                        <h4 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Hypothesis</h4>
                         <p className="text-sm text-zinc-900 dark:text-white whitespace-pre-wrap" data-testid="expanded-hypothesis">
                           {idea.hypothesis || "No hypothesis provided."}
                         </p>
                       </div>
-                      <div className="space-y-3">
-                        <div>
-                          <span className="text-sm text-zinc-500 dark:text-zinc-400">Validation Status: </span>
-                          {idea.validationStatus ? (
-                            <span className={`inline-flex px-2 py-0.5 text-xs font-medium rounded-full whitespace-nowrap ${statusColors[idea.validationStatus] || "bg-zinc-100 text-zinc-800"}`}>
-                              {statusLabels[idea.validationStatus] || idea.validationStatus}
-                            </span>
-                          ) : (
-                            <span className="text-sm text-zinc-600 dark:text-zinc-400">Not set</span>
-                          )}
-                        </div>
-                        <div>
-                          <span className="text-sm text-zinc-500 dark:text-zinc-400">Source: </span>
-                          {idea.source ? (
-                            <span className={`inline-flex px-2 py-0.5 text-xs font-medium rounded-full whitespace-nowrap ${sourceColor}`}>
-                              {sourceLabels[idea.source] || idea.source}
-                            </span>
-                          ) : (
-                            <span className="text-sm text-zinc-600 dark:text-zinc-400">Not set</span>
-                          )}
-                        </div>
-                        <div>
-                          <span className="text-sm text-zinc-500 dark:text-zinc-400">Created: </span>
-                          <span className="text-sm text-zinc-900 dark:text-white" data-testid="expanded-created">
-                            {new Date(idea.createdAt).toLocaleDateString("en-US", {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            })}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="text-sm text-zinc-500 dark:text-zinc-400">Upvotes: </span>
-                          <span className="text-sm text-zinc-900 dark:text-white">{idea.upvotes || 0}</span>
-                        </div>
+
+                      {/* Created date */}
+                      <div className="text-sm text-zinc-500 dark:text-zinc-400">
+                        <span>Created: </span>
+                        <span className="text-zinc-900 dark:text-white" data-testid="expanded-created">
+                          {new Date(idea.createdAt).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                        </span>
                       </div>
                     </div>
                   </td>
