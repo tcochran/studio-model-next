@@ -4,7 +4,7 @@ import IdeasList from "./IdeasList";
 
 export const dynamic = "force-dynamic";
 
-type SortField = "name" | "validationStatus" | "age" | "ageOldest";
+type SortField = "name" | "validationStatus" | "age" | "ageOldest" | "upvotes";
 type FilterField = "all" | "firstLevel" | "secondLevel" | "scaling";
 
 const statusOrder: Record<string, number> = {
@@ -51,7 +51,7 @@ export default async function Home({
 
     ideas = result.data?.filter((idea) => idea && idea.name) ?? [];
 
-    // Sort in-memory for name and validationStatus
+    // Sort in-memory for name, validationStatus, and upvotes
     if (sortBy === "name") {
       ideas.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
     } else if (sortBy === "validationStatus") {
@@ -60,6 +60,8 @@ export default async function Home({
         const orderB = statusOrder[b.validationStatus || ""] || 99;
         return orderA - orderB;
       });
+    } else if (sortBy === "upvotes") {
+      ideas.sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0));
     }
   } catch (e) {
     console.error("Error fetching ideas:", e);
@@ -95,6 +97,7 @@ export default async function Home({
               hypothesis: idea.hypothesis,
               validationStatus: idea.validationStatus,
               createdAt: idea.createdAt,
+              upvotes: idea.upvotes ?? 0,
             }))}
             currentSort={sortBy}
             currentFilter={filterBy}

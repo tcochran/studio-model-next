@@ -6,6 +6,7 @@ const schema = a.schema({
       name: a.string().required(),
       hypothesis: a.string().required(),
       validationStatus: a.string(),
+      upvotes: a.integer().default(0),
     })
     .authorization((allow) => [allow.publicApiKey()])
     .secondaryIndexes((index) => [

@@ -1,7 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { generateClient } from "aws-amplify/data";
+import type { Schema } from "../../amplify/data/resource";
+
+const client = generateClient<Schema>();
 
 type Idea = {
   id: string;
@@ -9,9 +14,10 @@ type Idea = {
   hypothesis: string | null;
   validationStatus: string | null;
   createdAt: string;
+  upvotes: number | null;
 };
 
-type SortField = "name" | "validationStatus" | "age" | "ageOldest";
+type SortField = "name" | "validationStatus" | "age" | "ageOldest" | "upvotes";
 type FilterField = "all" | "firstLevel" | "secondLevel" | "scaling";
 
 const statusLabels: Record<string, string> = {
@@ -27,7 +33,7 @@ const statusColors: Record<string, string> = {
 };
 
 export default function IdeasList({
-  ideas,
+  ideas: initialIdeas,
   currentSort,
   currentFilter,
 }: {
@@ -37,6 +43,25 @@ export default function IdeasList({
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [ideas, setIdeas] = useState(initialIdeas);
+
+  const handleUpvote = async (ideaId: string) => {
+    const idea = ideas.find((i) => i.id === ideaId);
+    if (!idea) return;
+
+    const newUpvotes = (idea.upvotes || 0) + 1;
+
+    // Optimistic update
+    setIdeas((prev) =>
+      prev.map((i) => (i.id === ideaId ? { ...i, upvotes: newUpvotes } : i))
+    );
+
+    // Update in database
+    await client.models.Idea.update({
+      id: ideaId,
+      upvotes: newUpvotes,
+    });
+  };
 
   const handleSortChange = (newSort: string) => {
     const params = new URLSearchParams(searchParams);
@@ -73,6 +98,7 @@ export default function IdeasList({
               <option value="ageOldest">Age (Oldest)</option>
               <option value="name">Name</option>
               <option value="validationStatus">Validation Status</option>
+              <option value="upvotes">Votes</option>
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
               <svg className="h-4 w-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -129,6 +155,9 @@ export default function IdeasList({
               <th className="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-white">
                 Validation Status
               </th>
+              <th className="px-4 py-3 text-right text-sm font-semibold text-zinc-900 dark:text-white">
+                Votes
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -159,6 +188,23 @@ export default function IdeasList({
                       {statusLabels[idea.validationStatus] || idea.validationStatus}
                     </span>
                   )}
+                </td>
+                <td className="px-4 py-3 text-right">
+                  <div className="flex items-center justify-end gap-2">
+                    <span
+                      className="text-zinc-600 dark:text-zinc-400"
+                      data-testid="upvote-count"
+                    >
+                      {idea.upvotes || 0}
+                    </span>
+                    <button
+                      onClick={() => handleUpvote(idea.id)}
+                      className="px-2 py-1 text-xs font-medium rounded bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 transition-colors"
+                      data-testid="upvote-button"
+                    >
+                      +1
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
