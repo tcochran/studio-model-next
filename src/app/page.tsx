@@ -103,6 +103,7 @@ export default async function Home({
               validationStatus: idea.validationStatus,
               createdAt: idea.createdAt,
               upvotes: idea.upvotes ?? 0,
+              source: idea.source ?? null,
             }))}
             currentSort={sortBy}
             currentFilter={filterBy}

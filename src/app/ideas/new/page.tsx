@@ -6,6 +6,7 @@ import { generateClient } from "aws-amplify/data";
 import type { Schema } from "../../../../amplify/data/resource";
 
 type ValidationStatus = "firstLevel" | "secondLevel" | "scaling";
+type Source = "customerFeedback" | "teamBrainstorm" | "competitorAnalysis" | "userResearch" | "marketTrend" | "internalRequest" | "other";
 
 export default function NewIdeaPage() {
   const client = useMemo(() => generateClient<Schema>(), []);
@@ -13,6 +14,7 @@ export default function NewIdeaPage() {
   const [name, setName] = useState("");
   const [hypothesis, setHypothesis] = useState("");
   const [validationStatus, setValidationStatus] = useState<ValidationStatus>("firstLevel");
+  const [source, setSource] = useState<Source | "">("");
   const [nameError, setNameError] = useState("");
   const [hypothesisError, setHypothesisError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,6 +45,7 @@ export default function NewIdeaPage() {
         name: name.trim(),
         hypothesis: hypothesis.trim(),
         validationStatus,
+        ...(source && { source }),
       });
       router.push("/");
       router.refresh();
@@ -130,6 +133,39 @@ export default function NewIdeaPage() {
                 <option value="firstLevel">First Level</option>
                 <option value="secondLevel">Second Level</option>
                 <option value="scaling">Scaling</option>
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                <svg className="h-4 w-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="source"
+              className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+            >
+              Source (optional)
+            </label>
+            <div className="relative inline-block">
+              <select
+                id="source"
+                name="source"
+                data-testid="source-select"
+                value={source}
+                onChange={(e) => setSource(e.target.value as Source | "")}
+                className="pl-4 pr-10 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer"
+              >
+                <option value="">Select source...</option>
+                <option value="customerFeedback">Customer Feedback</option>
+                <option value="teamBrainstorm">Team Brainstorm</option>
+                <option value="competitorAnalysis">Competitor Analysis</option>
+                <option value="userResearch">User Research</option>
+                <option value="marketTrend">Market Trend</option>
+                <option value="internalRequest">Internal Request</option>
+                <option value="other">Other</option>
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                 <svg className="h-4 w-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

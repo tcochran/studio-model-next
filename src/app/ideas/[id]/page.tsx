@@ -16,6 +16,18 @@ const statusColors: Record<string, string> = {
   scaling: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
 };
 
+const sourceLabels: Record<string, string> = {
+  customerFeedback: "Customer Feedback",
+  teamBrainstorm: "Team Brainstorm",
+  competitorAnalysis: "Competitor Analysis",
+  userResearch: "User Research",
+  marketTrend: "Market Trend",
+  internalRequest: "Internal Request",
+  other: "Other",
+};
+
+const sourceColor = "bg-zinc-100 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-200";
+
 export default async function IdeaDetailPage({
   params,
 }: {
@@ -96,6 +108,28 @@ export default async function IdeaDetailPage({
               <span
                 className="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200"
                 data-testid="idea-detail-status"
+              >
+                Not set
+              </span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-zinc-600 dark:text-zinc-400">
+              Source:
+            </span>
+            {idea.source && (
+              <span
+                className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${sourceColor}`}
+                data-testid="idea-detail-source"
+              >
+                {sourceLabels[idea.source] || idea.source}
+              </span>
+            )}
+            {!idea.source && (
+              <span
+                className="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200"
+                data-testid="idea-detail-source"
               >
                 Not set
               </span>

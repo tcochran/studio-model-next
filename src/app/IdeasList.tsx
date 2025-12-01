@@ -14,6 +14,7 @@ type Idea = {
   validationStatus: string | null;
   createdAt: string;
   upvotes: number | null;
+  source: string | null;
 };
 
 type SortField = "name" | "validationStatus" | "age" | "ageOldest" | "upvotes";
@@ -30,6 +31,18 @@ const statusColors: Record<string, string> = {
   secondLevel: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
   scaling: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
 };
+
+const sourceLabels: Record<string, string> = {
+  customerFeedback: "Customer Feedback",
+  teamBrainstorm: "Team Brainstorm",
+  competitorAnalysis: "Competitor Analysis",
+  userResearch: "User Research",
+  marketTrend: "Market Trend",
+  internalRequest: "Internal Request",
+  other: "Other",
+};
+
+const sourceColor = "bg-zinc-100 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-200";
 
 export default function IdeasList({
   ideas: initialIdeas,
@@ -186,6 +199,9 @@ export default function IdeasList({
               <th className="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-white">
                 Validation Status
               </th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-white">
+                Source
+              </th>
               <th className="px-4 py-3 text-right text-sm font-semibold text-zinc-900 dark:text-white">
                 Votes
               </th>
@@ -220,6 +236,15 @@ export default function IdeasList({
                       className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${statusColors[idea.validationStatus] || "bg-zinc-100 text-zinc-800"}`}
                     >
                       {statusLabels[idea.validationStatus] || idea.validationStatus}
+                    </span>
+                  )}
+                </td>
+                <td className="px-4 py-3" data-testid="idea-source">
+                  {idea.source && (
+                    <span
+                      className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${sourceColor}`}
+                    >
+                      {sourceLabels[idea.source] || idea.source}
                     </span>
                   )}
                 </td>

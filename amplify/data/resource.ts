@@ -7,11 +7,13 @@ const schema = a.schema({
       hypothesis: a.string().required(),
       validationStatus: a.string(),
       upvotes: a.integer().default(0),
+      source: a.enum(['customerFeedback', 'teamBrainstorm', 'competitorAnalysis', 'userResearch', 'marketTrend', 'internalRequest', 'other']),
     })
     .authorization((allow) => [allow.publicApiKey()])
     .secondaryIndexes((index) => [
       index('name'),
       index('validationStatus'),
+      index('source'),
     ]),
 });
 
