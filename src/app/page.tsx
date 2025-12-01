@@ -51,7 +51,8 @@ export default async function Home({
 
     ideas = result.data?.filter((idea) => idea && idea.name) ?? [];
 
-    // Sort in-memory for name, validationStatus, and upvotes
+    // Sort in-memory for all sorting options when filtering is active
+    // or for name, validationStatus, and upvotes sorting
     if (sortBy === "name") {
       ideas.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
     } else if (sortBy === "validationStatus") {
@@ -62,6 +63,10 @@ export default async function Home({
       });
     } else if (sortBy === "upvotes") {
       ideas.sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0));
+    } else if (sortBy === "age") {
+      ideas.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    } else if (sortBy === "ageOldest") {
+      ideas.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
     }
   } catch (e) {
     console.error("Error fetching ideas:", e);
