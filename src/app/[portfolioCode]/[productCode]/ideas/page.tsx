@@ -121,16 +121,25 @@ export default async function ScopedIdeasPage({
       </nav>
 
       <main className="mx-auto max-w-5xl px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold text-black dark:text-white">
             Idea Backlog
           </h1>
-          <Link
-            href={`/${portfolioCode}/${productCode}/ideas/new`}
-            className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-lg transition-colors"
-          >
-            + New Idea
-          </Link>
+          <div className="flex gap-2">
+            <Link
+              href={`/${portfolioCode}/${productCode}/ideas/funnel`}
+              data-testid="funnel-view-link"
+              className="px-4 py-2 bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white rounded-lg text-sm font-medium"
+            >
+              Funnel View
+            </Link>
+            <Link
+              href={`/${portfolioCode}/${productCode}/ideas/new`}
+              className="px-4 py-2 bg-[rgb(247,71,64)] hover:bg-[rgb(227,51,44)] text-white rounded-lg text-sm font-medium"
+            >
+              + New Idea
+            </Link>
+          </div>
         </div>
 
         {fetchError && (

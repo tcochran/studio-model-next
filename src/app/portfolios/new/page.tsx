@@ -138,7 +138,7 @@ export default function NewPortfolioPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full px-4 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-orange-400 text-white font-medium rounded-lg transition-colors"
+            className="w-full px-4 py-2 bg-[rgb(247,71,64)] hover:bg-[rgb(227,51,44)] disabled:bg-orange-400 text-white font-medium rounded-lg transition-colors"
           >
             {submitting ? "Creating..." : "Create Portfolio"}
           </button>
