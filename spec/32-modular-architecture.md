@@ -757,8 +757,10 @@ import { StatusBadge } from './StatusBadge';
 
 ## Task List
 
-- [ ] Create `src/features/` directory structure
-- [ ] Create `src/shared/` directory structure
+- [x] Create `src/features/` directory structure
+- [x] Create `src/shared/` directory structure
+- [x] Create feature subdirectories (portfolios, ideas, knowledge-base) with components/ and hooks/
+- [x] Create placeholder README.md files for each feature
 - [ ] Move shared components to `src/shared/components/`
 - [ ] Move shared utils to `src/shared/utils/`
 - [ ] Create `amplify/data/schemas/` directory
