@@ -4,7 +4,7 @@ backend:
     build:
       commands:
         - ls -la
-        - npm ci --cache .npm --prefer-offline
+        - npm install
         - npx ampx pipeline-deploy --branch $AWS_BRANCH --app-id $AWS_APP_ID
         - ls -la
 frontend:
@@ -21,7 +21,7 @@ frontend:
   cache:
     paths:
       - .next/cache/**/*
-      - .npm/**/*
+      - node_modules/**/*
 # test:
 #   phases:
 #     preTest:
