@@ -1,48 +1,10 @@
-import { cookiesClient } from "@/shared/utils/amplify-server-utils";
+import { listPortfolios } from "../queries";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
-type Product = {
-  code: string;
-  name: string;
-};
-
-type Portfolio = {
-  code: string;
-  organizationName: string;
-  name: string;
-  owners: string[];
-  products: Product[];
-};
-
-export default async function PortfoliosPage() {
-  let portfolios: Portfolio[] = [];
-  let fetchError: string | null = null;
-
-  try {
-    const result = await cookiesClient.models.Portfolio.list();
-    portfolios = (result.data ?? []).map((p) => {
-      let products: Product[] = [];
-      if (p.products) {
-        try {
-          products = typeof p.products === "string" ? JSON.parse(p.products) : p.products;
-        } catch {
-          products = [];
-        }
-      }
-      return {
-        code: p.code,
-        organizationName: p.organizationName,
-        name: p.name,
-        owners: (p.owners ?? []).filter((o): o is string => o !== null),
-        products,
-      };
-    });
-  } catch (e) {
-    console.error("Error fetching portfolios:", e);
-    fetchError = e instanceof Error ? e.message : "Unknown error fetching portfolios";
-  }
+export default async function PortfolioListPage() {
+  const { portfolios, error: fetchError } = await listPortfolios();
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-black">

@@ -5,6 +5,16 @@ import { PageTitle } from "@/shared/components/PageTitle";
 
 export const dynamic = "force-dynamic";
 
+type ValidationStatus = "backlog" | "firstLevel" | "secondLevel" | "scaling" | "failed";
+
+type Idea = {
+  id: string;
+  ideaNumber: number;
+  name: string;
+  validationStatus: ValidationStatus | null;
+  upvotes: number | null;
+};
+
 const statusLabels: Record<string, { label: string; description: string }> = {
   backlog: { label: "Backlog", description: "Not yet validated" },
   firstLevel: { label: "Unvalidated", description: "First Level Validation" },
@@ -55,7 +65,7 @@ export default async function FunnelPage({
 
   let portfolioName = portfolioCode;
   let productName = productCode;
-  let ideas: any[] = [];
+  let ideas: Idea[] = [];
   let error: string | null = null;
 
   try {

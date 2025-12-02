@@ -5,19 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "../../../../amplify/data/resource";
-
-type Product = {
-  code: string;
-  name: string;
-};
-
-type Portfolio = {
-  code: string;
-  organizationName: string;
-  name: string;
-  owners: string[];
-  products: Product[];
-};
+import type { Portfolio, Product } from "../types";
 
 export default function PortfolioDetailPage() {
   const client = useMemo(() => generateClient<Schema>(), []);

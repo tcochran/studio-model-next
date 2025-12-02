@@ -2,7 +2,6 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
-import Link from "next/link";
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "../../../../../../amplify/data/resource";
 import { PageHeader } from "@/shared/components/PageHeader";

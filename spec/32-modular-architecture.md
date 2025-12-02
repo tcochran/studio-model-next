@@ -772,10 +772,10 @@ import { StatusBadge } from './StatusBadge';
 - [x] Update `resource.ts` to combine schemas
 - [ ] Organize resolvers by feature (currently only getIdeaByNumber.ts)
 - [x] Test backend schema still works (verified in production)
-- [ ] Create portfolios feature structure
-- [ ] Migrate portfolios components
-- [ ] Create portfolios page components
-- [ ] Create `app/(admin)/portfolios/` route group with thin wiring
+- [x] Create portfolios feature structure
+- [x] Migrate portfolios components
+- [x] Create portfolios page components
+- [x] Create `app/(admin)/portfolios/` route group with thin wiring
 - [ ] Create ideas feature structure
 - [ ] Migrate ideas components
 - [ ] Create ideas page components

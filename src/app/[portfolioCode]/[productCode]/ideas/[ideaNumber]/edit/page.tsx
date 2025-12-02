@@ -116,7 +116,14 @@ export default function EditIdeaPage() {
     setIsSubmitting(true);
 
     try {
-      const updateData: any = {
+      const updateData: {
+        id: string;
+        name?: string;
+        hypothesis?: string;
+        validationStatus?: ValidationStatus;
+        source?: Source;
+        statusHistory?: string[];
+      } = {
         id: ideaId,
         name: name.trim(),
         hypothesis: hypothesis.trim(),
