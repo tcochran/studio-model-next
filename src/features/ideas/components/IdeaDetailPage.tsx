@@ -1,6 +1,8 @@
 import { cookiesClient } from "@/shared/utils/amplify-server-utils";
 import Link from "next/link";
 import { PageHeader } from "@/shared/components/PageHeader";
+import { StatusHistory } from "./StatusHistory";
+import { parseStatusHistory } from "../utils";
 
 export const dynamic = "force-dynamic";
 
@@ -225,6 +227,8 @@ export default async function IdeaDetailPage({
               {idea.hypothesis || "No hypothesis provided."}
             </div>
           </div>
+
+          <StatusHistory history={parseStatusHistory(idea.statusHistory as string[] | null)} />
         </div>
       </main>
     </div>

@@ -262,7 +262,7 @@ describe("Funnel View - 5 Stages", () => {
   });
 });
 
-describe.skip("Status History", () => {
+describe("Status History", () => {
   describe("Status History Display on Idea Detail Page", () => {
     it("displays status history section on idea detail page", () => {
       // Create an idea
