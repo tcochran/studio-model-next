@@ -11,6 +11,21 @@ const schema = a.schema({
     })
     .identifier(['code'])
     .authorization((allow) => [allow.publicApiKey()]),
+  getIdeaByNumber: a
+    .query()
+    .arguments({
+      portfolioCode: a.string().required(),
+      productCode: a.string().required(),
+      ideaNumber: a.integer().required(),
+    })
+    .returns(a.ref('Idea'))
+    .authorization((allow) => [allow.publicApiKey()])
+    .handler(
+      a.handler.custom({
+        entry: './resolvers/getIdeaByNumber.ts',
+        dataSource: a.ref('Idea')
+      })
+    ),
   Idea: a
     .model({
       ideaNumber: a.integer().required(),

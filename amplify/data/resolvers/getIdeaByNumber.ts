@@ -1,37 +1,35 @@
 import type { Schema } from '../resource';
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, QueryCommand } from '@aws-sdk/lib-dynamodb';
 
-const client = new DynamoDBClient({});
-const docClient = DynamoDBDocumentClient.from(client);
+export function request(ctx: any) {
+  const { portfolioCode, productCode, ideaNumber } = ctx.arguments;
 
-export const handler: Schema['getIdeaByNumber']['functionHandler'] = async (event) => {
-  const { portfolioCode, productCode, ideaNumber } = event.arguments;
-  const tableName = process.env.IDEA_TABLE_NAME;
+  return {
+    operation: 'Query',
+    index: 'ideasByProductCode',
+    query: {
+      expression: 'productCode = :productCode',
+      expressionValues: {
+        ':productCode': { S: productCode }
+      }
+    },
+    filter: {
+      expression: 'portfolioCode = :portfolioCode AND ideaNumber = :ideaNumber',
+      expressionValues: {
+        ':portfolioCode': { S: portfolioCode },
+        ':ideaNumber': { N: ideaNumber.toString() }
+      }
+    }
+  };
+}
 
-  if (!tableName) {
-    console.error('IDEA_TABLE_NAME environment variable not set');
-    throw new Error('Configuration error: IDEA_TABLE_NAME not set');
+export function response(ctx: any) {
+  if (ctx.error) {
+    throw new Error(ctx.error.message);
   }
 
-  // Query using the productCode GSI
-  const command = new QueryCommand({
-    TableName: tableName,
-    IndexName: 'ideasByProductCode',
-    KeyConditionExpression: 'productCode = :productCode',
-    FilterExpression: 'portfolioCode = :portfolioCode AND ideaNumber = :ideaNumber',
-    ExpressionAttributeValues: {
-      ':productCode': productCode,
-      ':portfolioCode': portfolioCode,
-      ':ideaNumber': ideaNumber,
-    },
-  });
-
-  const result = await docClient.send(command);
-
-  if (result.Items && result.Items.length > 0) {
-    return result.Items[0] as Schema['Idea']['type'];
+  if (ctx.result.items && ctx.result.items.length > 0) {
+    return ctx.result.items[0];
   }
 
   return null;
-};
+}
