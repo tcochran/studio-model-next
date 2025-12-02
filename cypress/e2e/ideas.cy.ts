@@ -232,7 +232,6 @@ describe("Ideas", () => {
           cy.get("@firstIdea").find('[data-testid="upvote-button"]').click();
           cy.get("@firstIdea").find('[data-testid="upvote-count"]').should("contain", String(expectedCount));
 
-          cy.wait(2000);
           cy.reload();
 
           cy.get("@ideaName").then((ideaName) => {

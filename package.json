@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "cypress": "cypress open",
-    "cypress:run": "cypress run",
+    "cypress:run": "cypress run --config video=false",
     "test:e2e": "start-server-and-test start http://localhost:3000 cypress:run",
     "pretest:e2e": "rm -rf cypress/report && npm run build",
     "posttest:e2e": "npx mochawesome-merge cypress/report/*.json > cypress/report/combined.json && npx marge cypress/report/combined.json -f report -o cypress/report",

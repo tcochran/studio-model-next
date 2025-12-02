@@ -5,8 +5,9 @@ import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "../../../../../../../amplify/data/resource";
+import { PageHeader } from "../../../../../../components/PageHeader";
 
-type ValidationStatus = "firstLevel" | "secondLevel" | "scaling";
+type ValidationStatus = "backlog" | "firstLevel" | "secondLevel" | "scaling" | "failed";
 type Source = "customerFeedback" | "teamBrainstorm" | "competitorAnalysis" | "userResearch" | "marketTrend" | "internalRequest" | "other";
 
 type Product = {
@@ -25,7 +26,9 @@ export default function EditIdeaPage() {
   const [ideaId, setIdeaId] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [hypothesis, setHypothesis] = useState("");
-  const [validationStatus, setValidationStatus] = useState<ValidationStatus>("firstLevel");
+  const [validationStatus, setValidationStatus] = useState<ValidationStatus>("backlog");
+  const [initialValidationStatus, setInitialValidationStatus] = useState<ValidationStatus>("backlog");
+  const [statusHistory, setStatusHistory] = useState<string[]>([]);
   const [source, setSource] = useState<Source | "">("");
   const [nameError, setNameError] = useState("");
   const [hypothesisError, setHypothesisError] = useState("");
@@ -75,7 +78,11 @@ export default function EditIdeaPage() {
         setIdeaId(idea.id);
         setName(idea.name || "");
         setHypothesis(idea.hypothesis || "");
-        setValidationStatus((idea.validationStatus as ValidationStatus) || "firstLevel");
+        const currentStatus = (idea.validationStatus as ValidationStatus) || "backlog";
+        setValidationStatus(currentStatus);
+        setInitialValidationStatus(currentStatus);
+        // Keep statusHistory as JSON strings
+        setStatusHistory((idea.statusHistory as string[]) || []);
         setSource((idea.source as Source) || "");
         setIsLoading(false);
       } catch (e) {
@@ -120,6 +127,15 @@ export default function EditIdeaPage() {
         updateData.source = source;
       }
 
+      // If status changed, append to status history
+      if (validationStatus !== initialValidationStatus) {
+        const newHistoryEntry = JSON.stringify({
+          status: validationStatus,
+          timestamp: new Date().toISOString(),
+        });
+        updateData.statusHistory = [...statusHistory, newHistoryEntry];
+      }
+
       await client.models.Idea.update(updateData);
       router.push(`${basePath}/${ideaNumber}`);
       router.refresh();
@@ -136,35 +152,13 @@ export default function EditIdeaPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-zinc-50 dark:bg-black">
-        <nav className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-          <div className="mx-auto max-w-5xl px-4 py-3 flex items-center">
-            <div className="flex gap-2">
-              <Link
-                href={`/portfolios/${portfolioCode}`}
-                className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white font-medium"
-              >
-                {portfolioName}
-              </Link>
-              <span className="text-zinc-400 dark:text-zinc-600">/</span>
-              <span className="text-zinc-900 dark:text-white font-medium">{productName}</span>
-            </div>
-            <div className="flex gap-6 mx-auto">
-              <Link
-                href={basePath}
-                className="text-zinc-900 dark:text-white font-medium"
-              >
-                Idea Backlog
-              </Link>
-              <Link
-                href={`/${portfolioCode}/${productCode}/kb`}
-                className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white font-medium"
-              >
-                Knowledge Base
-              </Link>
-            </div>
-            <div className="w-[150px]"></div>
-          </div>
-        </nav>
+        <PageHeader
+          portfolioCode={portfolioCode}
+          portfolioName={portfolioName}
+          productCode={productCode}
+          productName={productName}
+          activeTab="ideas"
+        />
 
         <main className="mx-auto max-w-3xl px-4 py-8">
           <p className="text-zinc-600 dark:text-zinc-400">Loading...</p>
@@ -176,35 +170,13 @@ export default function EditIdeaPage() {
   if (error) {
     return (
       <div className="min-h-screen bg-zinc-50 dark:bg-black">
-        <nav className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-          <div className="mx-auto max-w-5xl px-4 py-3 flex items-center">
-            <div className="flex gap-2">
-              <Link
-                href={`/portfolios/${portfolioCode}`}
-                className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white font-medium"
-              >
-                {portfolioName}
-              </Link>
-              <span className="text-zinc-400 dark:text-zinc-600">/</span>
-              <span className="text-zinc-900 dark:text-white font-medium">{productName}</span>
-            </div>
-            <div className="flex gap-6 mx-auto">
-              <Link
-                href={basePath}
-                className="text-zinc-900 dark:text-white font-medium"
-              >
-                Idea Backlog
-              </Link>
-              <Link
-                href={`/${portfolioCode}/${productCode}/kb`}
-                className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white font-medium"
-              >
-                Knowledge Base
-              </Link>
-            </div>
-            <div className="w-[150px]"></div>
-          </div>
-        </nav>
+        <PageHeader
+          portfolioCode={portfolioCode}
+          portfolioName={portfolioName}
+          productCode={productCode}
+          productName={productName}
+          activeTab="ideas"
+        />
 
         <main className="mx-auto max-w-5xl px-4 py-8">
           <Link
@@ -226,35 +198,13 @@ export default function EditIdeaPage() {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-black">
-      <nav className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-        <div className="mx-auto max-w-5xl px-4 py-3 flex items-center">
-          <div className="flex gap-2">
-            <Link
-              href={`/portfolios/${portfolioCode}`}
-              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white font-medium"
-            >
-              {portfolioName}
-            </Link>
-            <span className="text-zinc-400 dark:text-zinc-600">/</span>
-            <span className="text-zinc-900 dark:text-white font-medium">{productName}</span>
-          </div>
-          <div className="flex gap-6 mx-auto">
-            <Link
-              href={basePath}
-              className="text-zinc-900 dark:text-white font-medium"
-            >
-              Idea Backlog
-            </Link>
-            <Link
-              href={`/${portfolioCode}/${productCode}/kb`}
-              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white font-medium"
-            >
-              Knowledge Base
-            </Link>
-          </div>
-          <div className="w-[150px]"></div>
-        </div>
-      </nav>
+      <PageHeader
+        portfolioCode={portfolioCode}
+        portfolioName={portfolioName}
+        productCode={productCode}
+        productName={productName}
+        activeTab="ideas"
+      />
 
       <main className="mx-auto max-w-3xl px-4 py-8">
         <h1 className="text-3xl font-bold text-black dark:text-white mb-8">
@@ -329,9 +279,11 @@ export default function EditIdeaPage() {
                 onChange={(e) => setValidationStatus(e.target.value as ValidationStatus)}
                 className="pl-4 pr-10 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer"
               >
+                <option value="backlog">Backlog</option>
                 <option value="firstLevel">First Level</option>
                 <option value="secondLevel">Second Level</option>
                 <option value="scaling">Scaling</option>
+                <option value="failed">Failed</option>
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                 <svg className="h-4 w-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

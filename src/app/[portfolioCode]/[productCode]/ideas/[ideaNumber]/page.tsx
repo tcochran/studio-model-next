@@ -1,19 +1,24 @@
 import { cookiesClient } from "../../../../../utils/amplify-server-utils";
 import Link from "next/link";
+import { PageHeader } from "../../../../../components/PageHeader";
 
 export const dynamic = "force-dynamic";
 
 const statusLabels: Record<string, string> = {
+  backlog: "Backlog",
   firstLevel: "First Level",
   secondLevel: "Second Level",
   scaling: "Scaling",
+  failed: "Failed",
 };
 
 const statusColors: Record<string, string> = {
+  backlog: "bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200",
   firstLevel: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
   secondLevel:
     "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
   scaling: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+  failed: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
 };
 
 const sourceLabels: Record<string, string> = {
@@ -85,35 +90,13 @@ export default async function IdeaDetailPage({
   if (!idea || error) {
     return (
       <div className="min-h-screen bg-zinc-50 dark:bg-black">
-        <nav className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-          <div className="mx-auto max-w-5xl px-4 py-3 flex items-center">
-            <div className="flex gap-2">
-              <Link
-                href={`/portfolios/${portfolioCode}`}
-                className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white font-medium"
-              >
-                {portfolioName}
-              </Link>
-              <span className="text-zinc-400 dark:text-zinc-600">/</span>
-              <span className="text-zinc-900 dark:text-white font-medium">{productName}</span>
-            </div>
-            <div className="flex gap-6 mx-auto">
-              <Link
-                href={basePath}
-                className="text-zinc-900 dark:text-white font-medium"
-              >
-                Idea Backlog
-              </Link>
-              <Link
-                href={`/${portfolioCode}/${productCode}/kb`}
-                className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white font-medium"
-              >
-                Knowledge Base
-              </Link>
-            </div>
-            <div className="w-[150px]"></div>
-          </div>
-        </nav>
+        <PageHeader
+          portfolioCode={portfolioCode}
+          portfolioName={portfolioName}
+          productCode={productCode}
+          productName={productName}
+          activeTab="ideas"
+        />
 
         <main className="mx-auto max-w-5xl px-4 py-8">
           <Link
@@ -141,35 +124,13 @@ export default async function IdeaDetailPage({
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-black">
-      <nav className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-        <div className="mx-auto max-w-5xl px-4 py-3 flex items-center">
-          <div className="flex gap-2">
-            <Link
-              href={`/portfolios/${portfolioCode}`}
-              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white font-medium"
-            >
-              {portfolioName}
-            </Link>
-            <span className="text-zinc-400 dark:text-zinc-600">/</span>
-            <span className="text-zinc-900 dark:text-white font-medium">{productName}</span>
-          </div>
-          <div className="flex gap-6 mx-auto">
-            <Link
-              href={basePath}
-              className="text-zinc-900 dark:text-white font-medium"
-            >
-              Idea Backlog
-            </Link>
-            <Link
-              href={`/${portfolioCode}/${productCode}/kb`}
-              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white font-medium"
-            >
-              Knowledge Base
-            </Link>
-          </div>
-          <div className="w-[150px]"></div>
-        </div>
-      </nav>
+      <PageHeader
+        portfolioCode={portfolioCode}
+        portfolioName={portfolioName}
+        productCode={productCode}
+        productName={productName}
+        activeTab="ideas"
+      />
 
       <main className="mx-auto max-w-5xl px-4 py-8">
         <div className="flex items-center justify-between mb-6">

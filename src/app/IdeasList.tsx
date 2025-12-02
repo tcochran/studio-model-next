@@ -19,18 +19,22 @@ type Idea = {
 };
 
 type SortField = "name" | "validationStatus" | "age" | "ageOldest" | "upvotes" | "ideaNumber";
-type FilterField = "all" | "firstLevel" | "secondLevel" | "scaling";
+type FilterField = "all" | "backlog" | "firstLevel" | "secondLevel" | "scaling" | "failed";
 
 const statusLabels: Record<string, string> = {
+  backlog: "Backlog",
   firstLevel: "First Level",
   secondLevel: "Second Level",
   scaling: "Scaling",
+  failed: "Failed",
 };
 
 const statusColors: Record<string, string> = {
+  backlog: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200",
   firstLevel: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
   secondLevel: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
   scaling: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+  failed: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
 };
 
 const sourceLabels: Record<string, string> = {
@@ -172,9 +176,11 @@ export default function IdeasList({
               className="pl-3 pr-8 py-1.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none cursor-pointer"
             >
               <option value="all">All</option>
+              <option value="backlog">Backlog</option>
               <option value="firstLevel">First Level</option>
               <option value="secondLevel">Second Level</option>
               <option value="scaling">Scaling</option>
+              <option value="failed">Failed</option>
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
               <svg className="h-4 w-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

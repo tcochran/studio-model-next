@@ -1,15 +1,24 @@
 import { cookiesClient } from "../../../../../utils/amplify-server-utils";
 import Link from "next/link";
+import { PageHeader } from "../../../../../components/PageHeader";
+import { PageTitle } from "../../../../../components/PageTitle";
 
 export const dynamic = "force-dynamic";
 
 const statusLabels: Record<string, { label: string; description: string }> = {
+  backlog: { label: "Backlog", description: "Not yet validated" },
   firstLevel: { label: "Unvalidated", description: "First Level Validation" },
   secondLevel: { label: "Partially Validated", description: "Second Level Validation" },
   scaling: { label: "Fully Validated", description: "Scaling" },
+  failed: { label: "Failed", description: "Did not validate" },
 };
 
 const statusColors: Record<string, { card: string; border: string; header: string }> = {
+  backlog: {
+    card: "bg-gray-50 dark:bg-gray-950/20",
+    border: "border-gray-200 dark:border-gray-800",
+    header: "text-gray-900 dark:text-gray-100",
+  },
   firstLevel: {
     card: "bg-blue-50 dark:bg-blue-950/20",
     border: "border-blue-200 dark:border-blue-800",
@@ -24,6 +33,11 @@ const statusColors: Record<string, { card: string; border: string; header: strin
     card: "bg-green-50 dark:bg-green-950/20",
     border: "border-green-200 dark:border-green-800",
     header: "text-green-900 dark:text-green-100",
+  },
+  failed: {
+    card: "bg-red-50 dark:bg-red-950/20",
+    border: "border-red-200 dark:border-red-800",
+    header: "text-red-900 dark:text-red-100",
   },
 };
 
@@ -77,49 +91,27 @@ export default async function FunnelPage({
 
   // Group ideas by validation status
   const groupedIdeas = {
+    backlog: ideas.filter((idea) => idea.validationStatus === "backlog"),
     firstLevel: ideas.filter((idea) => idea.validationStatus === "firstLevel"),
     secondLevel: ideas.filter((idea) => idea.validationStatus === "secondLevel"),
     scaling: ideas.filter((idea) => idea.validationStatus === "scaling"),
+    failed: ideas.filter((idea) => idea.validationStatus === "failed"),
   };
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-black">
-      <nav className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-        <div className="mx-auto max-w-5xl px-4 py-3 flex items-center">
-          <div className="flex gap-2">
-            <Link
-              href={`/portfolios/${portfolioCode}`}
-              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white font-medium"
-            >
-              {portfolioName}
-            </Link>
-            <span className="text-zinc-400 dark:text-zinc-600">/</span>
-            <span className="text-zinc-900 dark:text-white font-medium">{productName}</span>
-          </div>
-          <div className="flex gap-6 mx-auto">
-            <Link
-              href={basePath}
-              className="text-zinc-900 dark:text-white font-medium"
-            >
-              Idea Backlog
-            </Link>
-            <Link
-              href={`/${portfolioCode}/${productCode}/kb`}
-              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white font-medium"
-            >
-              Knowledge Base
-            </Link>
-          </div>
-          <div className="w-[150px]"></div>
-        </div>
-      </nav>
+      <PageHeader
+        portfolioCode={portfolioCode}
+        portfolioName={portfolioName}
+        productCode={productCode}
+        productName={productName}
+        activeTab="ideas"
+      />
 
-      <main className="mx-auto max-w-7xl px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-black dark:text-white">
-            Idea Funnel
-          </h1>
-          <div className="flex gap-2">
+      <PageTitle
+        title="Idea Funnel"
+        actions={
+          <>
             <Link
               href={basePath}
               data-testid="list-view-link"
@@ -133,8 +125,11 @@ export default async function FunnelPage({
             >
               + New Idea
             </Link>
-          </div>
-        </div>
+          </>
+        }
+      />
+
+      <main className="mx-auto max-w-7xl px-4 py-8">
 
         {error && (
           <div className="p-6 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 rounded-lg mb-6">
@@ -143,6 +138,50 @@ export default async function FunnelPage({
         )}
 
         <div className="space-y-12">
+          {/* Backlog */}
+          <div className="flex flex-col items-center">
+            <div
+              className="w-full"
+              style={{ maxWidth: "100%" }}
+              data-testid="funnel-layer-backlog"
+            >
+              <div className="mb-6 text-center">
+                <div className="inline-block">
+                  <h2 className={`text-xl font-semibold mb-1 ${statusColors.backlog.header}`}>
+                    {statusLabels.backlog.label}
+                  </h2>
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                    {groupedIdeas.backlog.length} {groupedIdeas.backlog.length === 1 ? "idea" : "ideas"}
+                  </p>
+                </div>
+              </div>
+              <div className={`border-t-2 ${statusColors.backlog.border} mb-4`}></div>
+              {groupedIdeas.backlog.length > 0 ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-2">
+                  {groupedIdeas.backlog.map((idea) => (
+                    <Link
+                      key={idea.id}
+                      href={`${basePath}/${idea.ideaNumber}?from=funnel`}
+                      data-testid="idea-card"
+                      className={`block p-2 h-[60px] ${statusColors.backlog.card} border ${statusColors.backlog.border} rounded hover:shadow-md hover:scale-105 transition-all cursor-pointer`}
+                    >
+                      <div className="text-[10px] font-medium text-zinc-500 dark:text-zinc-400 mb-1" data-testid="idea-card-number">
+                        #{idea.ideaNumber}
+                      </div>
+                      <div className="text-xs font-medium text-zinc-900 dark:text-white line-clamp-2" data-testid="idea-card-name">
+                        {idea.name}
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-center text-zinc-500 dark:text-zinc-400 py-8">
+                  No ideas in this stage
+                </p>
+              )}
+            </div>
+          </div>
+
           {/* First Level - Unvalidated */}
           <div className="flex flex-col items-center">
             <div
@@ -257,6 +296,50 @@ export default async function FunnelPage({
                       href={`${basePath}/${idea.ideaNumber}?from=funnel`}
                       data-testid="idea-card"
                       className={`block p-2 h-[60px] ${statusColors.scaling.card} border ${statusColors.scaling.border} rounded hover:shadow-md hover:scale-105 transition-all cursor-pointer`}
+                    >
+                      <div className="text-[10px] font-medium text-zinc-500 dark:text-zinc-400 mb-1" data-testid="idea-card-number">
+                        #{idea.ideaNumber}
+                      </div>
+                      <div className="text-xs font-medium text-zinc-900 dark:text-white line-clamp-2" data-testid="idea-card-name">
+                        {idea.name}
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-center text-zinc-500 dark:text-zinc-400 py-8">
+                  No ideas in this stage
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Failed - Graveyard */}
+          <div className="flex flex-col items-center">
+            <div
+              className="w-full"
+              style={{ maxWidth: "100%" }}
+              data-testid="funnel-layer-failed"
+            >
+              <div className="mb-6 text-center">
+                <div className="inline-block">
+                  <h2 className={`text-xl font-semibold mb-1 ${statusColors.failed.header}`}>
+                    {statusLabels.failed.label}
+                  </h2>
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                    {groupedIdeas.failed.length} {groupedIdeas.failed.length === 1 ? "idea" : "ideas"}
+                  </p>
+                </div>
+              </div>
+              <div className={`border-t-2 ${statusColors.failed.border} mb-4`}></div>
+              {groupedIdeas.failed.length > 0 ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-2">
+                  {groupedIdeas.failed.map((idea) => (
+                    <Link
+                      key={idea.id}
+                      href={`${basePath}/${idea.ideaNumber}?from=funnel`}
+                      data-testid="idea-card"
+                      className={`block p-2 h-[60px] ${statusColors.failed.card} border ${statusColors.failed.border} rounded hover:shadow-md hover:scale-105 transition-all cursor-pointer`}
                     >
                       <div className="text-[10px] font-medium text-zinc-500 dark:text-zinc-400 mb-1" data-testid="idea-card-number">
                         #{idea.ideaNumber}

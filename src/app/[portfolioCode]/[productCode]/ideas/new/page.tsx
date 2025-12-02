@@ -5,8 +5,9 @@ import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "../../../../../../amplify/data/resource";
+import { PageHeader } from "../../../../../components/PageHeader";
 
-type ValidationStatus = "firstLevel" | "secondLevel" | "scaling";
+type ValidationStatus = "backlog" | "firstLevel" | "secondLevel" | "scaling" | "failed";
 type Source = "customerFeedback" | "teamBrainstorm" | "competitorAnalysis" | "userResearch" | "marketTrend" | "internalRequest" | "other";
 
 type Product = {
@@ -23,7 +24,7 @@ export default function NewIdeaPage() {
 
   const [name, setName] = useState("");
   const [hypothesis, setHypothesis] = useState("");
-  const [validationStatus, setValidationStatus] = useState<ValidationStatus>("firstLevel");
+  const [validationStatus, setValidationStatus] = useState<ValidationStatus>("backlog");
   const [source, setSource] = useState<Source | "">("");
   const [nameError, setNameError] = useState("");
   const [hypothesisError, setHypothesisError] = useState("");
@@ -57,6 +58,7 @@ export default function NewIdeaPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Form submitted");
     setNameError("");
     setHypothesisError("");
 
@@ -72,11 +74,16 @@ export default function NewIdeaPage() {
       hasError = true;
     }
 
-    if (hasError) return;
+    if (hasError) {
+      console.log("Validation errors, not submitting");
+      return;
+    }
 
+    console.log("Starting idea creation...");
     setIsSubmitting(true);
 
     try {
+      console.log("Fetching existing ideas for:", { portfolioCode, productCode });
       // Get the next idea number for this product
       const existingIdeas = await client.models.Idea.list({
         filter: {
@@ -85,60 +92,52 @@ export default function NewIdeaPage() {
         },
       });
 
+      console.log("Existing ideas count:", existingIdeas.data?.length);
+
       const maxIdeaNumber = existingIdeas.data?.reduce((max, idea) => {
         return Math.max(max, idea.ideaNumber || 0);
       }, 0) || 0;
 
       const nextIdeaNumber = maxIdeaNumber + 1;
+      console.log("Next idea number:", nextIdeaNumber);
 
-      await client.models.Idea.create({
+      const ideaData = {
         ideaNumber: nextIdeaNumber,
         name: name.trim(),
         hypothesis: hypothesis.trim(),
         validationStatus,
+        statusHistory: [JSON.stringify({
+          status: validationStatus,
+          timestamp: new Date().toISOString(),
+        })],
         portfolioCode,
         productCode,
         ...(source && { source }),
-      });
+      };
+
+      console.log("Creating idea with data:", ideaData);
+
+      const result = await client.models.Idea.create(ideaData);
+      console.log("Idea created successfully:", result);
+
       router.push(`/${portfolioCode}/${productCode}/ideas`);
       router.refresh();
     } catch (error) {
       console.error("Error creating idea:", error);
+      console.error("Error details:", JSON.stringify(error, null, 2));
       setIsSubmitting(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-black">
-      <nav className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-        <div className="mx-auto max-w-5xl px-4 py-3 flex items-center">
-          <div className="flex gap-2">
-            <Link
-              href={`/portfolios/${portfolioCode}`}
-              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white font-medium"
-            >
-              {portfolioName}
-            </Link>
-            <span className="text-zinc-400 dark:text-zinc-600">/</span>
-            <span className="text-zinc-900 dark:text-white font-medium">{productName}</span>
-          </div>
-          <div className="flex gap-6 mx-auto">
-            <Link
-              href={`/${portfolioCode}/${productCode}/ideas`}
-              className="text-zinc-900 dark:text-white font-medium"
-            >
-              Idea Backlog
-            </Link>
-            <Link
-              href={`/${portfolioCode}/${productCode}/kb`}
-              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white font-medium"
-            >
-              Knowledge Base
-            </Link>
-          </div>
-          <div className="w-[150px]"></div>
-        </div>
-      </nav>
+      <PageHeader
+        portfolioCode={portfolioCode}
+        portfolioName={portfolioName}
+        productCode={productCode}
+        productName={productName}
+        activeTab="ideas"
+      />
 
       <main className="mx-auto max-w-3xl px-4 py-8">
         <h1 className="text-3xl font-bold text-black dark:text-white mb-8">
@@ -213,9 +212,11 @@ export default function NewIdeaPage() {
                 onChange={(e) => setValidationStatus(e.target.value as ValidationStatus)}
                 className="pl-4 pr-10 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none cursor-pointer"
               >
+                <option value="backlog">Backlog</option>
                 <option value="firstLevel">First Level</option>
                 <option value="secondLevel">Second Level</option>
                 <option value="scaling">Scaling</option>
+                <option value="failed">Failed</option>
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                 <svg className="h-4 w-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

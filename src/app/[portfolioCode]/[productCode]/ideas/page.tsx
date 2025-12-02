@@ -1,16 +1,20 @@
 import { cookiesClient } from "../../../../utils/amplify-server-utils";
 import Link from "next/link";
 import IdeasList from "../../../IdeasList";
+import { PageHeader } from "../../../../components/PageHeader";
+import { PageTitle } from "../../../../components/PageTitle";
 
 export const dynamic = "force-dynamic";
 
 type SortField = "name" | "validationStatus" | "age" | "ageOldest" | "upvotes" | "ideaNumber";
-type FilterField = "all" | "firstLevel" | "secondLevel" | "scaling";
+type FilterField = "all" | "backlog" | "firstLevel" | "secondLevel" | "scaling" | "failed";
 
 const statusOrder: Record<string, number> = {
+  backlog: 0,
   firstLevel: 1,
   secondLevel: 2,
   scaling: 3,
+  failed: 4,
 };
 
 type Product = {
@@ -90,42 +94,18 @@ export default async function ScopedIdeasPage({
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-black">
-      <nav className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-        <div className="mx-auto max-w-7xl px-4 py-3 flex items-center">
-          <div className="flex gap-2">
-            <Link
-              href={`/portfolios/${portfolioCode}`}
-              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white font-medium"
-            >
-              {portfolioName}
-            </Link>
-            <span className="text-zinc-400 dark:text-zinc-600">/</span>
-            <span className="text-zinc-900 dark:text-white font-medium">{productName}</span>
-          </div>
-          <div className="flex gap-6 mx-auto">
-            <Link
-              href={`/${portfolioCode}/${productCode}/ideas`}
-              className="text-zinc-900 dark:text-white font-medium"
-            >
-              Idea Backlog
-            </Link>
-            <Link
-              href={`/${portfolioCode}/${productCode}/kb`}
-              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white font-medium"
-            >
-              Knowledge Base
-            </Link>
-          </div>
-          <div className="w-[150px]"></div>
-        </div>
-      </nav>
+      <PageHeader
+        portfolioCode={portfolioCode}
+        portfolioName={portfolioName}
+        productCode={productCode}
+        productName={productName}
+        activeTab="ideas"
+      />
 
-      <main className="mx-auto max-w-7xl px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-black dark:text-white">
-            Idea Backlog
-          </h1>
-          <div className="flex gap-2">
+      <PageTitle
+        title="Idea Backlog"
+        actions={
+          <>
             <Link
               href={`/${portfolioCode}/${productCode}/ideas/funnel`}
               data-testid="funnel-view-link"
@@ -139,8 +119,11 @@ export default async function ScopedIdeasPage({
             >
               + New Idea
             </Link>
-          </div>
-        </div>
+          </>
+        }
+      />
+
+      <main className="mx-auto max-w-7xl px-4 py-8">
 
         {fetchError && (
           <div className="mb-4 p-4 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 rounded-lg">

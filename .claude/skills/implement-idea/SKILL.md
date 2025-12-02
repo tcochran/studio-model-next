@@ -1,6 +1,6 @@
 ---
 name: implement-idea
-description: Guide implementation of backlog ideas through a collaborative workflow. Start by fetching idea details from MCP, create specification with technical design and task list, write tests, get user approval at each step, then implement. Use when asked to implement, build, or develop a feature from the product backlog.
+description: Guide implementation of backlog ideas through a collaborative workflow. Start by fetching idea details from MCP, create specification, write tests, get user approval at each step, then implement. Use when asked to implement, build, or develop a feature from the product backlog.
 ---
 
 # Implement Idea
@@ -19,29 +19,14 @@ This skill guides you through a **collaborative, approval-based workflow** for i
 ### Step 2: Create Specification Document
 - Create a new spec file in `spec/` directory (e.g., `spec/31-feature-name.md`)
 - Use the spec number from the idea number
-- Include these **required sections**:
+- Include these sections:
   - **Status**: Draft (will be updated to Complete later)
-  - **Created**: Current date (YYYY-MM-DD)
-  - **Goal**: What the feature accomplishes
-  - **Problem**: What problem it solves (optional if obvious)
-  - **Solution**: High-level approach
-  - **Technical Design**: Detailed implementation approach
-    - File structure and locations
-    - Component architecture
-    - Data flow
-    - State management approach
-  - **Task List**: Checkbox list of implementation tasks
-    - `- [ ] Task description`
-    - Break down into concrete, actionable items
-  - **Test Plan**: What needs to be tested and how
-  - **Acceptance Criteria**: Checkbox list of completion criteria
-- **ASK USER**: Present the spec and ask clarifying questions
-  - What approach should we take?
-  - Are there specific UI/UX preferences?
-  - Any constraints or considerations?
-  - Which files should be modified?
-  - Is the technical design sound?
-- **WAIT**: Do not proceed until user approves the specification
+  - **Created**: Current date
+  - **Overview**: What the feature does
+  - **Requirements**: Functional and technical requirements
+  - **Implementation Plan**: Files to create/modify, approach
+  - **Test Plan**: What needs to be tested
+  - **ASK USER**: If there are unclear things in the requirements ask the user for clarifications, don't guess
 
 ### Step 3: Write Tests (TDD)
 - Based on approved spec, write Cypress E2E tests in `cypress/e2e/`
@@ -52,26 +37,11 @@ This skill guides you through a **collaborative, approval-based workflow** for i
   - Happy path scenarios
   - Edge cases
   - Error handling
-- **ASK USER**: Show the test plan and ask:
-  - Are these test cases comprehensive?
-  - Any additional scenarios to test?
-  - Should we modify existing tests?
+- **ASK USER**: Show the test plan and him to review:
 - **WAIT**: Do not proceed until user approves the tests
 
-### Step 4: Review Implementation Approach
-- Outline the implementation plan based on the spec:
-  - Files to create or modify
-  - Backend changes needed (if any)
-  - Component structure
-  - State management approach
-- **ASK USER**: Present the plan and confirm:
-  - Does this approach make sense?
-  - Any architectural concerns?
-  - Should we use different patterns?
-- **WAIT**: Do not proceed until user approves the approach
-
-### Step 5: Implement the Feature
-**ONLY PROCEED AFTER USER APPROVAL OF STEPS 2, 3, AND 4**
+### Step 4: Implement the Feature
+**ONLY PROCEED AFTER USER APPROVAL OF STEPS 2, AND 3**
 
 - Follow Next.js 15 + React 19 conventions
 - Use Tailwind CSS for styling (custom button color: `bg-[rgb(247,71,64)]`)
@@ -86,37 +56,26 @@ This skill guides you through a **collaborative, approval-based workflow** for i
 - Run `npx ampx sandbox --once` to regenerate local outputs
 - Test with local sandbox before pushing
 
-**Check off tasks** in the spec's task list as you complete them.
-
-### Step 6: Run Tests
+### Step 5: Run Tests
 - Run all tests: `unset ELECTRON_RUN_AS_NODE && npx cypress run`
 - **If tests fail**: Fix the implementation and re-run tests
 - **If tests pass**: Show results to user and proceed
 
-### Step 7: Manual Testing
-- Test manually in browser (http://localhost:3000)
-- Verify both light and dark modes work
-- Check responsive design on different screen sizes
-- **ASK USER**: Request user to manually verify the feature works as expected
-- **WAIT**: Do not commit until user confirms it works
-
-### Step 8: Update Documentation
+### Step 6: Update Documentation
 - Update spec file:
-  - Change status from "Draft" to "Complete" or "Completed"
-  - Add "Completed" date field (if not already there)
-  - Ensure all task checkboxes are checked
-  - Ensure all acceptance criteria are checked
+  - Change status from "Draft" to "Complete"
+  - Add "Completed" date field
 - Update CLAUDE.md if project structure or conventions changed
 - No additional documentation files unless explicitly requested
 
-### Step 9: Commit & Push
+### Step 7: Commit & Push
 **ONLY AFTER USER APPROVAL**
 
 - **ASK USER**: "Ready to commit and push? This will auto-deploy to production."
 - **WAIT**: Do not commit until user confirms
 - Commit ALL changed files with clear, descriptive message
 - Git status must be completely clean (no unstaged or untracked files)
-- Include spec number in commit message (e.g., "Implement feature X (spec 31)")
+- Include spec number in commit message
 - Push to main branch (auto-deploys to AWS Amplify)
 - Production URL: https://main.dok8rg7vk45b7.amplifyapp.com
 
@@ -127,26 +86,8 @@ This skill guides you through a **collaborative, approval-based workflow** for i
 3. **Show your work** - present specs, tests, and code for review before proceeding
 4. **Test-Driven Development** - write tests before implementation
 5. **Clean git state** - commit all files or clean them up completely
-6. **Include required spec sections** - Technical Design and Task List are mandatory
 
-## Project Context
+## Example Interaction
 
-### Tech Stack
-- Frontend: Next.js 15, React 19, Tailwind CSS
-- Backend: AWS Amplify Gen 2 (AppSync GraphQL, DynamoDB)
-- Testing: Cypress E2E with mochawesome reporter
-- Deployment: AWS Amplify Hosting (auto-deploy on push)
-
-### File Locations
-- Specs: `spec/`
-- Tests: `cypress/e2e/`
-- Pages: `src/app/`
-- Components: `src/components/` or `src/app/`
-- Backend: `amplify/data/resource.ts`
-
-### Important Conventions
-- Custom button color: `bg-[rgb(247,71,64)]` hover: `bg-[rgb(227,51,44)]`
-- Validation colors: First Level = blue, Second Level = purple, Scaling = green
-- Max width: `max-w-7xl` for idea pages, `max-w-5xl` for portfolio pages
-- Never use emdashes in writing
-- Always `unset ELECTRON_RUN_AS_NODE` before Cypress (required in VSCode)
+```
+User: "Implement idea #31"

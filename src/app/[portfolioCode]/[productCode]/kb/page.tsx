@@ -1,5 +1,7 @@
 import { cookiesClient } from "../../../../utils/amplify-server-utils";
 import Link from "next/link";
+import { PageHeader } from "../../../../components/PageHeader";
+import { PageTitle } from "../../../../components/PageTitle";
 
 export const dynamic = "force-dynamic";
 
@@ -59,48 +61,27 @@ export default async function ScopedKBPage({
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-black">
-      <nav className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-        <div className="mx-auto max-w-5xl px-4 py-3 flex items-center">
-          <div className="flex gap-2">
-            <Link
-              href={`/portfolios/${portfolioCode}`}
-              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white font-medium"
-            >
-              {portfolioName}
-            </Link>
-            <span className="text-zinc-400 dark:text-zinc-600">/</span>
-            <span className="text-zinc-900 dark:text-white font-medium">{productName}</span>
-          </div>
-          <div className="flex gap-6 mx-auto">
-            <Link
-              href={`/${portfolioCode}/${productCode}/ideas`}
-              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white font-medium"
-            >
-              Idea Backlog
-            </Link>
-            <Link
-              href={`/${portfolioCode}/${productCode}/kb`}
-              className="text-zinc-900 dark:text-white font-medium"
-            >
-              Knowledge Base
-            </Link>
-          </div>
-          <div className="w-[150px]"></div>
-        </div>
-      </nav>
+      <PageHeader
+        portfolioCode={portfolioCode}
+        portfolioName={portfolioName}
+        productCode={productCode}
+        productName={productName}
+        activeTab="kb"
+      />
 
-      <main className="mx-auto max-w-5xl px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-black dark:text-white">
-            Knowledge Base
-          </h1>
+      <PageTitle
+        title="Knowledge Base"
+        actions={
           <Link
             href={`/${portfolioCode}/${productCode}/kb/new`}
             className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-lg transition-colors"
           >
             + New Document
           </Link>
-        </div>
+        }
+      />
+
+      <main className="mx-auto max-w-5xl px-4 py-8">
 
         {fetchError && (
           <div className="mb-4 p-4 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 rounded-lg">
