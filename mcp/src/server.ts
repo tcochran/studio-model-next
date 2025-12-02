@@ -150,19 +150,25 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
 
         const result = await graphqlRequest(
-          `query GetIdeaByNumber($portfolioCode: String!, $productCode: String!, $ideaNumber: Int!) {
-            getIdeaByNumber(portfolioCode: $portfolioCode, productCode: $productCode, ideaNumber: $ideaNumber) {
-              id
-              ideaNumber
-              name
-              hypothesis
-              validationStatus
-              upvotes
-              source
-              portfolioCode
-              productCode
-              createdAt
-              updatedAt
+          `query ListIdeas($portfolioCode: String!, $productCode: String!, $ideaNumber: Int!) {
+            listIdeas(filter: {
+              portfolioCode: { eq: $portfolioCode },
+              productCode: { eq: $productCode },
+              ideaNumber: { eq: $ideaNumber }
+            }) {
+              items {
+                id
+                ideaNumber
+                name
+                hypothesis
+                validationStatus
+                upvotes
+                source
+                portfolioCode
+                productCode
+                createdAt
+                updatedAt
+              }
             }
           }`,
           { portfolioCode, productCode, ideaNumber }
@@ -180,7 +186,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           };
         }
 
-        const idea = result.data?.getIdeaByNumber;
+        const idea = result.data?.listIdeas?.items?.[0];
         if (!idea) {
           return {
             content: [
