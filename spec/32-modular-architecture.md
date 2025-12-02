@@ -509,6 +509,18 @@ Manages innovation ideas through validation stages (backlog → first level → 
 - **validation-status.cy.ts**: Status changes, history tracking
 - **funnel.cy.ts**: Funnel view, stage grouping
 
+### Running Tests
+```bash
+# Run only ideas tests
+npm run test:ideas
+
+# Run all E2E tests
+npm run test:e2e
+
+# Interactive mode
+npm run test:e2e:ui
+```
+
 ## Dependencies
 
 ### Internal
@@ -586,27 +598,103 @@ Manages innovation ideas through validation stages (backlog → first level → 
 
 ## Testing Strategy
 
-### Unit Tests (Future)
-- Each module can have its own unit tests
-- Test components in isolation
-- Mock dependencies from other modules
+### Test Organization Philosophy
+
+Tests are organized by feature in `cypress/e2e/{feature}/` to maintain Cypress conventions while enabling:
+- **Granular test execution** - Run only the tests for the feature you're working on
+- **Fast feedback loops** - No need to run entire test suite during development
+- **Clear ownership** - Easy to see what tests belong to each feature
+- **Parallel execution** - Can run feature test suites in parallel in CI
 
 ### E2E Tests (Current)
-- Organize by module in `cypress/e2e/`
-- Tests can span multiple modules (reflecting user journeys)
-- Keep existing test coverage during migration
+Organize by feature in `cypress/e2e/`:
+```
+cypress/e2e/
+├── portfolios/
+│   └── portfolio.cy.ts
+├── ideas/
+│   ├── ideas.cy.ts
+│   ├── validation-status.cy.ts
+│   └── funnel.cy.ts
+├── knowledge-base/
+│   └── kb.cy.ts
+└── api/
+    └── api.cy.ts
+```
+
+### Unit Tests (Future)
+When adding unit tests, place them in the feature folder:
+```
+src/features/ideas/
+├── components/
+├── __tests__/              # Unit tests (Vitest/Jest)
+│   ├── StatusBadge.test.tsx
+│   ├── useIdeas.test.ts
+│   └── utils.test.ts
+```
 
 ### Test Commands
-```bash
-# Run all tests
-unset ELECTRON_RUN_AS_NODE && npx cypress run
 
-# Run tests for specific module
-unset ELECTRON_RUN_AS_NODE && npx cypress run --spec "cypress/e2e/ideas/**"
+Add these scripts to `package.json`:
 
-# Interactive testing
-unset ELECTRON_RUN_AS_NODE && npx cypress open
+```json
+{
+  "scripts": {
+    "test:e2e": "unset ELECTRON_RUN_AS_NODE && npx cypress run",
+    "test:e2e:ui": "unset ELECTRON_RUN_AS_NODE && npx cypress open",
+    "test:portfolios": "unset ELECTRON_RUN_AS_NODE && npx cypress run --spec 'cypress/e2e/portfolios/**'",
+    "test:ideas": "unset ELECTRON_RUN_AS_NODE && npx cypress run --spec 'cypress/e2e/ideas/**'",
+    "test:kb": "unset ELECTRON_RUN_AS_NODE && npx cypress run --spec 'cypress/e2e/knowledge-base/**'",
+    "test:api": "unset ELECTRON_RUN_AS_NODE && npx cypress run --spec 'cypress/e2e/api/**'"
+  }
+}
 ```
+
+**Usage examples:**
+```bash
+# Run all E2E tests
+npm run test:e2e
+
+# Run only ideas tests (when working on ideas feature)
+npm run test:ideas
+
+# Run only portfolios tests
+npm run test:portfolios
+
+# Run only KB tests
+npm run test:kb
+
+# Run API tests
+npm run test:api
+
+# Interactive mode (select specific tests)
+npm run test:e2e:ui
+```
+
+### CI/CD Strategy
+
+In CI, you can run feature tests in parallel for faster builds:
+
+```yaml
+# Example GitHub Actions / Amplify build config
+test:
+  parallel:
+    - npm run test:portfolios
+    - npm run test:ideas
+    - npm run test:kb
+    - npm run test:api
+```
+
+### Development Workflow
+
+When working on a specific feature:
+
+1. **Make changes** to feature code in `src/features/{feature}/`
+2. **Run feature tests** with `npm run test:{feature}`
+3. **Fast feedback** - only run relevant tests
+4. **Before committing** - run full suite with `npm run test:e2e`
+
+This keeps development fast while ensuring full coverage before merging.
 
 ## Dependency Rules
 
@@ -692,12 +780,14 @@ import { StatusBadge } from './StatusBadge';
 - [ ] Migrate KB components
 - [ ] Create KB page components
 - [ ] Create `app/(product)/.../(kb)/` route group with thin wiring
-- [ ] Organize tests by feature
-- [ ] Update test imports
-- [ ] Write feature READMEs
+- [ ] Organize tests by feature in `cypress/e2e/{feature}/`
+- [ ] Update test imports if needed
+- [ ] Add feature-specific test scripts to `package.json`
+- [ ] Test each feature's test suite independently
+- [ ] Write feature READMEs (including test commands)
 - [ ] Update root README.md
 - [ ] Update `tsconfig.json` with path aliases (@/features/*, @/shared/*)
-- [ ] Run full test suite
+- [ ] Run full test suite (`npm run test:e2e`)
 - [ ] Verify production deployment
 
 ## Acceptance Criteria
@@ -710,9 +800,11 @@ import { StatusBadge } from './StatusBadge';
 - [ ] Route groups `(admin)`, `(product)`, `(ideas)`, `(kb)` organize app/ directory
 - [ ] All `src/app/` page files are thin (5-10 lines) and just import from features
 - [ ] Tests organized by feature in `cypress/e2e/`
-- [ ] Each feature has comprehensive README.md
+- [ ] Feature-specific test commands in `package.json` (test:portfolios, test:ideas, test:kb)
+- [ ] Can run individual feature test suites independently
+- [ ] Each feature has comprehensive README.md (including test commands)
 - [ ] All imports use path aliases (@/features/*, @/shared/*)
-- [ ] All existing tests pass
+- [ ] All existing tests pass (`npm run test:e2e`)
 - [ ] No regression in functionality
 - [ ] Production deployment successful
 - [ ] Documentation complete
