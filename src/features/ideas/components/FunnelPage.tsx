@@ -121,6 +121,7 @@ export default async function FunnelPage({
 
       <PageTitle
         title="Idea Funnel"
+        maxWidth="7xl"
         actions={
           <>
             <Link

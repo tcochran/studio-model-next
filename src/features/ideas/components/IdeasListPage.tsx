@@ -79,6 +79,7 @@ export default async function IdeasListPage({
 
       <PageTitle
         title="Idea Backlog"
+        maxWidth="7xl"
         actions={
           <>
             <Link

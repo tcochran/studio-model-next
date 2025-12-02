@@ -55,7 +55,7 @@ export async function KBListPage({
         actions={
           <Link
             href={`/${portfolioCode}/${productCode}/kb/new`}
-            className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-lg transition-colors"
+            className="px-4 py-2 bg-[rgb(247,71,64)] hover:bg-[rgb(227,51,44)] text-white rounded-lg text-sm font-medium"
           >
             + New Document
           </Link>
