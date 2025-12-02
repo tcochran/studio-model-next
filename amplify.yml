@@ -8,9 +8,6 @@ backend:
         - npx ampx pipeline-deploy --branch $AWS_BRANCH --app-id $AWS_APP_ID
 frontend:
   phases:
-    preBuild:
-      commands:
-        - echo "Skipping npm ci - packages already installed in backend phase"
     build:
       commands:
         - npm run build
@@ -18,11 +15,11 @@ frontend:
     baseDirectory: .next
     files:
       - "**/*"
+  cache:
+    paths:
+      - .next/cache/**/* # Example for Next.js
 test:
   phases:
-    preTest:
-      commands:
-        - echo "Skipping build - already built in frontend phase"
     test:
       commands:
         - npx start-server-and-test start http://localhost:3000 cypress:run
@@ -36,6 +33,3 @@ test:
     files:
       - "**/*.png"
       - "**/*.mp4"
-cache:
-  paths:
-    - .next/cache/**/* # Example for Next.js
