@@ -168,7 +168,7 @@ export default async function FunnelPage({
               </div>
               <div className={`border-t-2 ${statusColors.backlog.border} mb-4`}></div>
               {groupedIdeas.backlog.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-2">
+                <div className="flex flex-wrap gap-3 justify-center">
                   {groupedIdeas.backlog.map((idea) => (
                     <IdeaCard
                       key={idea.id}
@@ -206,7 +206,7 @@ export default async function FunnelPage({
               </div>
               <div className={`border-t-2 ${statusColors.firstLevel.border} mb-4`}></div>
               {groupedIdeas.firstLevel.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+                <div className="flex flex-wrap gap-3 justify-center">
                   {groupedIdeas.firstLevel.map((idea) => (
                     <IdeaCard
                       key={idea.id}
@@ -244,7 +244,7 @@ export default async function FunnelPage({
               </div>
               <div className={`border-t-2 ${statusColors.secondLevel.border} mb-4`}></div>
               {groupedIdeas.secondLevel.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+                <div className="flex flex-wrap gap-3 justify-center">
                   {groupedIdeas.secondLevel.map((idea) => (
                     <IdeaCard
                       key={idea.id}
@@ -282,7 +282,7 @@ export default async function FunnelPage({
               </div>
               <div className={`border-t-2 ${statusColors.scaling.border} mb-4`}></div>
               {groupedIdeas.scaling.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                <div className="flex flex-wrap gap-3 justify-center">
                   {groupedIdeas.scaling.map((idea) => (
                     <IdeaCard
                       key={idea.id}
@@ -320,7 +320,7 @@ export default async function FunnelPage({
               </div>
               <div className={`border-t-2 ${statusColors.failed.border} mb-4`}></div>
               {groupedIdeas.failed.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-2">
+                <div className="flex flex-wrap gap-3 justify-center">
                   {groupedIdeas.failed.map((idea) => (
                     <IdeaCard
                       key={idea.id}

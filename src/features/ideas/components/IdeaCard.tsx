@@ -39,7 +39,7 @@ export function IdeaCard({ ideaNumber, name, validationStatus, href }: IdeaCardP
     <Link
       href={href}
       data-testid="idea-card"
-      className={`flex gap-2 p-3 ${colors.card} border ${colors.border} rounded hover:shadow-md hover:scale-105 transition-all cursor-pointer`}
+      className={`flex gap-2 p-3 min-h-[72px] w-[160px] ${colors.card} border ${colors.border} rounded hover:shadow-md hover:scale-105 transition-all cursor-pointer`}
     >
       <div
         className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 flex-shrink-0"
