@@ -10,13 +10,22 @@ This file provides context and guidelines for AI assistants working in this code
 
 ```
 studio-model-next/
+├── .claude/              # Claude Code configuration
+│   └── skills/           # Custom Claude Code skills
 ├── amplify/              # AWS Amplify Gen 2 backend (data schema, auth)
+│   ├── data/
+│   │   ├── resource.ts   # GraphQL schema definitions
+│   │   └── resolvers/    # Custom Lambda resolvers
+│   └── package.json      # Backend-specific dependencies (AWS SDK)
 ├── src/
 │   ├── app/              # Next.js App Router pages
 │   └── utils/            # Utility functions (Amplify server utils)
 ├── cypress/              # Cypress E2E tests
-│   └── e2e/              # Test specs
+│   ├── e2e/              # Test specs
+│   └── support/          # Test utilities and constants
+├── scripts/              # Utility scripts (data seeding)
 ├── spec/                 # Technical specifications and documentation
+├── amplify.yml           # Amplify build configuration
 └── claude.md             # This file
 ```
 
@@ -64,6 +73,12 @@ studio-model-next/
 - After schema changes, regenerate local outputs: `npx ampx sandbox --once`
 - Safe to regenerate `amplify_outputs.json` locally without affecting production
 
+### Backend Development
+- Custom resolvers are in `amplify/data/resolvers/`
+- Resolvers require AWS SDK dependencies in `amplify/package.json`
+- Install amplify dependencies: `cd amplify && npm install`
+- The `amplify.yml` build script installs these dependencies automatically during deployment
+
 ### Dependencies
 - Frontend: Next.js 15, React 19, Tailwind CSS
 - Backend: AWS Amplify Gen 2 (AppSync GraphQL, DynamoDB)
@@ -79,6 +94,16 @@ studio-model-next/
 - For writing, never use emdashes
 - Update this file as the project structure and conventions evolve
 
+### Build Troubleshooting
+- Use the `check-build` skill to diagnose Amplify build failures
+- Check build status: "Did the last build fail?"
+- Investigate failures: "Why did build 43 fail?"
+- The skill automatically fetches logs and provides root cause analysis
+
+### Claude Code Skills
+- **implement-idea**: Guide for implementing backlog ideas through a collaborative workflow
+- **check-build**: Diagnose AWS Amplify build failures and identify root causes
+
 ### Git Workflow
 - When committing, always commit all changed files or clean them up
 - Git status should be empty after a commit (no unstaged or untracked files related to the work)
@@ -86,4 +111,4 @@ studio-model-next/
 
 ---
 
-*Last updated: 2025-12-01*
+*Last updated: 2025-12-02*
