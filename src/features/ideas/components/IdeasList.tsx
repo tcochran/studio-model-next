@@ -4,50 +4,10 @@ import { useState, useMemo, Fragment } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { generateClient } from "aws-amplify/data";
-import type { Schema } from "../../amplify/data/resource";
+import type { Schema } from "../../../../amplify/data/resource";
 import { formatRelativeTime } from "@/shared/utils/formatRelativeTime";
-
-type Idea = {
-  id: string;
-  ideaNumber: number;
-  name: string | null;
-  hypothesis: string | null;
-  validationStatus: string | null;
-  createdAt: string;
-  upvotes: number | null;
-  source: string | null;
-};
-
-type SortField = "name" | "validationStatus" | "age" | "ageOldest" | "upvotes" | "ideaNumber";
-type FilterField = "all" | "backlog" | "firstLevel" | "secondLevel" | "scaling" | "failed";
-
-const statusLabels: Record<string, string> = {
-  backlog: "Backlog",
-  firstLevel: "First Level",
-  secondLevel: "Second Level",
-  scaling: "Scaling",
-  failed: "Failed",
-};
-
-const statusColors: Record<string, string> = {
-  backlog: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200",
-  firstLevel: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  secondLevel: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
-  scaling: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  failed: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-};
-
-const sourceLabels: Record<string, string> = {
-  customerFeedback: "Customer Feedback",
-  teamBrainstorm: "Team Brainstorm",
-  competitorAnalysis: "Competitor Analysis",
-  userResearch: "User Research",
-  marketTrend: "Market Trend",
-  internalRequest: "Internal Request",
-  other: "Other",
-};
-
-const sourceColor = "bg-zinc-100 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-200";
+import type { Idea, SortField, FilterField } from "../types";
+import { statusLabels, statusColors, sourceLabels, sourceColor } from "../constants";
 
 export default function IdeasList({
   ideas: initialIdeas,

@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { generateClient } from "aws-amplify/data";
-import type { Schema } from "../../../../../../amplify/data/resource";
+import type { Schema } from "../../../../amplify/data/resource";
 import { PageHeader } from "@/shared/components/PageHeader";
 
 type ValidationStatus = "backlog" | "firstLevel" | "secondLevel" | "scaling" | "failed";

@@ -1,28 +1,19 @@
 import { cookiesClient } from "@/shared/utils/amplify-server-utils";
 import Link from "next/link";
-import IdeasList from "../../../IdeasList";
+import IdeasList from "./IdeasList";
 import { PageHeader } from "@/shared/components/PageHeader";
 import { PageTitle } from "@/shared/components/PageTitle";
+import type { SortField, FilterField, Idea } from "../types";
+import { sortIdeas } from "../utils";
 
 export const dynamic = "force-dynamic";
-
-type SortField = "name" | "validationStatus" | "age" | "ageOldest" | "upvotes" | "ideaNumber";
-type FilterField = "all" | "backlog" | "firstLevel" | "secondLevel" | "scaling" | "failed";
-
-const statusOrder: Record<string, number> = {
-  backlog: 0,
-  firstLevel: 1,
-  secondLevel: 2,
-  scaling: 3,
-  failed: 4,
-};
 
 type Product = {
   code: string;
   name: string;
 };
 
-export default async function ScopedIdeasPage({
+export default async function IdeasListPage({
   params,
   searchParams,
 }: {
@@ -69,24 +60,8 @@ export default async function ScopedIdeasPage({
       ideas = ideas.filter((idea) => idea.validationStatus === filterBy);
     }
 
-    // Sort in-memory
-    if (sortBy === "name") {
-      ideas.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
-    } else if (sortBy === "validationStatus") {
-      ideas.sort((a, b) => {
-        const orderA = statusOrder[a.validationStatus || ""] || 99;
-        const orderB = statusOrder[b.validationStatus || ""] || 99;
-        return orderA - orderB;
-      });
-    } else if (sortBy === "upvotes") {
-      ideas.sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0));
-    } else if (sortBy === "age") {
-      ideas.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-    } else if (sortBy === "ageOldest") {
-      ideas.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-    } else if (sortBy === "ideaNumber") {
-      ideas.sort((a, b) => (b.ideaNumber || 0) - (a.ideaNumber || 0));
-    }
+    // Sort ideas
+    ideas = sortIdeas(ideas as Idea[], sortBy) as typeof ideas;
   } catch (e) {
     console.error("Error fetching ideas:", e);
     fetchError = e instanceof Error ? e.message : "Unknown error fetching ideas";
@@ -133,16 +108,7 @@ export default async function ScopedIdeasPage({
 
         {!fetchError ? (
           <IdeasList
-            ideas={ideas.map((idea) => ({
-              id: idea.id,
-              ideaNumber: idea.ideaNumber,
-              name: idea.name,
-              hypothesis: idea.hypothesis,
-              validationStatus: idea.validationStatus,
-              createdAt: idea.createdAt,
-              upvotes: idea.upvotes ?? 0,
-              source: idea.source ?? null,
-            }))}
+            ideas={ideas as Idea[]}
             currentSort={sortBy}
             currentFilter={filterBy}
             portfolioCode={portfolioCode}

@@ -776,10 +776,10 @@ import { StatusBadge } from './StatusBadge';
 - [x] Migrate portfolios components
 - [x] Create portfolios page components
 - [x] Create `app/(admin)/portfolios/` route group with thin wiring
-- [ ] Create ideas feature structure
-- [ ] Migrate ideas components
-- [ ] Create ideas page components
-- [ ] Create `app/(product)/.../( ideas)/` route group with thin wiring
+- [x] Create ideas feature structure
+- [x] Migrate ideas components (IdeasList, StatusBadge, etc)
+- [x] Create ideas page components (IdeasListPage, IdeaDetailPage, EditIdeaPage, NewIdeaPage, FunnelPage)
+- [x] Create `app/(product)/[portfolioCode]/[productCode]/ideas/` route structure with thin wiring
 - [ ] Create knowledge-base feature structure
 - [ ] Migrate KB components
 - [ ] Create KB page components
