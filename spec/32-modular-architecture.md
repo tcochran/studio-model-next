@@ -761,8 +761,10 @@ import { StatusBadge } from './StatusBadge';
 - [x] Create `src/shared/` directory structure
 - [x] Create feature subdirectories (portfolios, ideas, knowledge-base) with components/ and hooks/
 - [x] Create placeholder README.md files for each feature
+- [x] Update `tsconfig.json` with path aliases (@/features/*, @/shared/*, @/app/*)
+- [x] Move shared utils to `src/shared/utils/` (amplify-server-utils.ts, formatRelativeTime.ts)
+- [x] Update all imports to use new @/shared/utils/* paths
 - [ ] Move shared components to `src/shared/components/`
-- [ ] Move shared utils to `src/shared/utils/`
 - [ ] Create `amplify/data/schemas/` directory
 - [ ] Extract `portfolio-schema.ts`
 - [ ] Extract `idea-schema.ts`
