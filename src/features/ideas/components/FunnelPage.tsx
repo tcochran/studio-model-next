@@ -2,6 +2,7 @@ import { cookiesClient } from "@/shared/utils/amplify-server-utils";
 import Link from "next/link";
 import { PageHeader } from "@/shared/components/PageHeader";
 import { PageTitle } from "@/shared/components/PageTitle";
+import { IdeaCard } from "./IdeaCard";
 
 export const dynamic = "force-dynamic";
 
@@ -169,19 +170,13 @@ export default async function FunnelPage({
               {groupedIdeas.backlog.length > 0 ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-2">
                   {groupedIdeas.backlog.map((idea) => (
-                    <Link
+                    <IdeaCard
                       key={idea.id}
+                      ideaNumber={idea.ideaNumber}
+                      name={idea.name}
+                      validationStatus="backlog"
                       href={`${basePath}/${idea.ideaNumber}?from=funnel`}
-                      data-testid="idea-card"
-                      className={`block p-2 h-[60px] ${statusColors.backlog.card} border ${statusColors.backlog.border} rounded hover:shadow-md hover:scale-105 transition-all cursor-pointer`}
-                    >
-                      <div className="text-[10px] font-medium text-zinc-500 dark:text-zinc-400 mb-1" data-testid="idea-card-number">
-                        #{idea.ideaNumber}
-                      </div>
-                      <div className="text-xs font-medium text-zinc-900 dark:text-white line-clamp-2" data-testid="idea-card-name">
-                        {idea.name}
-                      </div>
-                    </Link>
+                    />
                   ))}
                 </div>
               ) : (
@@ -213,19 +208,13 @@ export default async function FunnelPage({
               {groupedIdeas.firstLevel.length > 0 ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
                   {groupedIdeas.firstLevel.map((idea) => (
-                    <Link
+                    <IdeaCard
                       key={idea.id}
+                      ideaNumber={idea.ideaNumber}
+                      name={idea.name}
+                      validationStatus="firstLevel"
                       href={`${basePath}/${idea.ideaNumber}?from=funnel`}
-                      data-testid="idea-card"
-                      className={`block p-2 h-[60px] ${statusColors.firstLevel.card} border ${statusColors.firstLevel.border} rounded hover:shadow-md hover:scale-105 transition-all cursor-pointer`}
-                    >
-                      <div className="text-[10px] font-medium text-zinc-500 dark:text-zinc-400 mb-1" data-testid="idea-card-number">
-                        #{idea.ideaNumber}
-                      </div>
-                      <div className="text-xs font-medium text-zinc-900 dark:text-white line-clamp-2" data-testid="idea-card-name">
-                        {idea.name}
-                      </div>
-                    </Link>
+                    />
                   ))}
                 </div>
               ) : (
@@ -257,19 +246,13 @@ export default async function FunnelPage({
               {groupedIdeas.secondLevel.length > 0 ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
                   {groupedIdeas.secondLevel.map((idea) => (
-                    <Link
+                    <IdeaCard
                       key={idea.id}
+                      ideaNumber={idea.ideaNumber}
+                      name={idea.name}
+                      validationStatus="secondLevel"
                       href={`${basePath}/${idea.ideaNumber}?from=funnel`}
-                      data-testid="idea-card"
-                      className={`block p-2 h-[60px] ${statusColors.secondLevel.card} border ${statusColors.secondLevel.border} rounded hover:shadow-md hover:scale-105 transition-all cursor-pointer`}
-                    >
-                      <div className="text-[10px] font-medium text-zinc-500 dark:text-zinc-400 mb-1" data-testid="idea-card-number">
-                        #{idea.ideaNumber}
-                      </div>
-                      <div className="text-xs font-medium text-zinc-900 dark:text-white line-clamp-2" data-testid="idea-card-name">
-                        {idea.name}
-                      </div>
-                    </Link>
+                    />
                   ))}
                 </div>
               ) : (
@@ -301,19 +284,13 @@ export default async function FunnelPage({
               {groupedIdeas.scaling.length > 0 ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                   {groupedIdeas.scaling.map((idea) => (
-                    <Link
+                    <IdeaCard
                       key={idea.id}
+                      ideaNumber={idea.ideaNumber}
+                      name={idea.name}
+                      validationStatus="scaling"
                       href={`${basePath}/${idea.ideaNumber}?from=funnel`}
-                      data-testid="idea-card"
-                      className={`block p-2 h-[60px] ${statusColors.scaling.card} border ${statusColors.scaling.border} rounded hover:shadow-md hover:scale-105 transition-all cursor-pointer`}
-                    >
-                      <div className="text-[10px] font-medium text-zinc-500 dark:text-zinc-400 mb-1" data-testid="idea-card-number">
-                        #{idea.ideaNumber}
-                      </div>
-                      <div className="text-xs font-medium text-zinc-900 dark:text-white line-clamp-2" data-testid="idea-card-name">
-                        {idea.name}
-                      </div>
-                    </Link>
+                    />
                   ))}
                 </div>
               ) : (
@@ -345,19 +322,13 @@ export default async function FunnelPage({
               {groupedIdeas.failed.length > 0 ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-2">
                   {groupedIdeas.failed.map((idea) => (
-                    <Link
+                    <IdeaCard
                       key={idea.id}
+                      ideaNumber={idea.ideaNumber}
+                      name={idea.name}
+                      validationStatus="failed"
                       href={`${basePath}/${idea.ideaNumber}?from=funnel`}
-                      data-testid="idea-card"
-                      className={`block p-2 h-[60px] ${statusColors.failed.card} border ${statusColors.failed.border} rounded hover:shadow-md hover:scale-105 transition-all cursor-pointer`}
-                    >
-                      <div className="text-[10px] font-medium text-zinc-500 dark:text-zinc-400 mb-1" data-testid="idea-card-number">
-                        #{idea.ideaNumber}
-                      </div>
-                      <div className="text-xs font-medium text-zinc-900 dark:text-white line-clamp-2" data-testid="idea-card-name">
-                        {idea.name}
-                      </div>
-                    </Link>
+                    />
                   ))}
                 </div>
               ) : (
