@@ -764,14 +764,14 @@ import { StatusBadge } from './StatusBadge';
 - [x] Update `tsconfig.json` with path aliases (@/features/*, @/shared/*, @/app/*)
 - [x] Move shared utils to `src/shared/utils/` (amplify-server-utils.ts, formatRelativeTime.ts)
 - [x] Update all imports to use new @/shared/utils/* paths
-- [ ] Move shared components to `src/shared/components/`
-- [ ] Create `amplify/data/schemas/` directory
-- [ ] Extract `portfolio-schema.ts`
-- [ ] Extract `idea-schema.ts`
-- [ ] Extract `kb-schema.ts`
-- [ ] Update `resource.ts` to combine schemas
-- [ ] Organize resolvers by feature
-- [ ] Test backend schema still works
+- [x] Move shared components to `src/shared/components/`
+- [x] Create `amplify/data/schemas/` directory
+- [x] Extract `portfolio-schema.ts`
+- [x] Extract `idea-schema.ts`
+- [x] Extract `kb-schema.ts`
+- [x] Update `resource.ts` to combine schemas
+- [ ] Organize resolvers by feature (currently only getIdeaByNumber.ts)
+- [x] Test backend schema still works (verified in production)
 - [ ] Create portfolios feature structure
 - [ ] Migrate portfolios components
 - [ ] Create portfolios page components
