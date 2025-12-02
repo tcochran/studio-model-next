@@ -38,7 +38,3 @@ test:
     files:
       - "**/*.png"
       - "**/*.mp4"
-  cache:
-    paths:
-      - .next/cache/**/*
-      - node_modules/**/*

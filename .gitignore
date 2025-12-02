@@ -51,3 +51,6 @@ amplifyconfiguration*
 cypress/report/
 cypress/screenshots/
 cypress/videos/
+
+# npm cache
+.npm/
