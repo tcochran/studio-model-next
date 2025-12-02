@@ -2,28 +2,24 @@ import { cookiesClient } from "@/shared/utils/amplify-server-utils";
 import Link from "next/link";
 import { PageHeader } from "@/shared/components/PageHeader";
 import { PageTitle } from "@/shared/components/PageTitle";
+import { getKBDocumentsByProduct } from "../queries";
+import type { Product } from "../types";
 
 export const dynamic = "force-dynamic";
 
-type Product = {
-  code: string;
-  name: string;
-};
-
-export default async function ScopedKBPage({
+export async function KBListPage({
   params,
 }: {
   params: Promise<{ portfolioCode: string; productCode: string }>;
 }) {
   const { portfolioCode, productCode } = await params;
 
-  let documents: NonNullable<Awaited<ReturnType<typeof cookiesClient.models.KBDocument.list>>["data"]> = [];
+  let documents: NonNullable<Awaited<ReturnType<typeof getKBDocumentsByProduct>>> = [];
   let fetchError: string | null = null;
   let portfolioName = portfolioCode;
   let productName = productCode;
 
   try {
-    // Fetch portfolio to get names
     const portfolioResult = await cookiesClient.models.Portfolio.get({ code: portfolioCode });
     if (portfolioResult.data) {
       portfolioName = portfolioResult.data.name;
@@ -38,22 +34,7 @@ export default async function ScopedKBPage({
       }
     }
 
-    // Fetch documents filtered by productCode using GSI
-    const result = await cookiesClient.models.KBDocument.listKBDocumentByProductCode({
-      productCode,
-    });
-
-    // Further filter by portfolioCode in memory
-    documents = (result.data ?? []).filter(
-      (doc) => doc && doc.title && doc.portfolioCode === portfolioCode
-    );
-
-    // Sort by createdAt descending (newest first)
-    documents.sort((a, b) => {
-      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-      return dateB - dateA;
-    });
+    documents = await getKBDocumentsByProduct(portfolioCode, productCode);
   } catch (e) {
     console.error("Error fetching documents:", e);
     fetchError = e instanceof Error ? e.message : "Unknown error fetching documents";

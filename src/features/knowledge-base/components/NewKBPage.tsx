@@ -3,15 +3,11 @@
 import { useState, useMemo, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { generateClient } from "aws-amplify/data";
-import type { Schema } from "../../../../../../amplify/data/resource";
+import type { Schema } from "../../../../amplify/data/resource";
 import { PageHeader } from "@/shared/components/PageHeader";
+import type { Product } from "../types";
 
-type Product = {
-  code: string;
-  name: string;
-};
-
-export default function NewDocumentPage() {
+export function NewKBPage() {
   const client = useMemo(() => generateClient<Schema>(), []);
   const router = useRouter();
   const params = useParams();

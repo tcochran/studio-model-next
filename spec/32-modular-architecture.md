@@ -1,6 +1,6 @@
 # Spec 32: Modular Architecture
 
-**Status:** In Progress (70% Complete)
+**Status:** In Progress (85% Complete)
 **Created:** 2025-12-02
 **Last Updated:** 2025-12-02
 
@@ -542,10 +542,10 @@ npm run test:e2e:ui
 
 ## Migration Strategy
 
-**Current Status: Phase 3 (70% Complete)**
+**Current Status: Phase 3 Complete (85% Overall)**
 - ✅ Phase 1: Complete - Module structure created
 - ✅ Phase 2: Complete - Backend schemas split and tested
-- 🔄 Phase 3: In Progress - Frontend migration (Portfolios ✅, Ideas ✅, KB pending)
+- ✅ Phase 3: Complete - Frontend migration (Portfolios ✅, Ideas ✅, KB ✅)
 - ⏳ Phase 4: Pending - Test organization
 - ⏳ Phase 5: Pending - Documentation
 
@@ -583,13 +583,13 @@ npm run test:e2e:ui
    - Update routes to import from feature (thin wiring)
    - Create `features/ideas/hooks/`, `queries.ts`, `constants.ts`
 
-3. **Knowledge Base Feature** ⏳ Pending:
+3. **Knowledge Base Feature** ✅ Complete:
    - Create `features/knowledge-base/components/`
    - Extract KB components
-   - Create page components (KBListPage, etc.)
-   - Create `app/(product)/[portfolioCode]/[productCode]/(kb)/` route group
+   - Create page components (KBListPage, NewKBPage, KBDetailPage)
+   - Create `app/(product)/[portfolioCode]/[productCode]/kb/` routes
    - Update routes to import from feature (thin wiring)
-   - Create `features/knowledge-base/hooks/`, `queries.ts`
+   - Create `queries.ts`, `mutations.ts`, `types.ts`
 
 ### Phase 4: Organize Tests ⏳ Pending
 1. Create module subdirectories in `cypress/e2e/`
@@ -788,10 +788,10 @@ import { StatusBadge } from './StatusBadge';
 - [x] Migrate ideas components (IdeasList, StatusBadge, etc)
 - [x] Create ideas page components (IdeasListPage, IdeaDetailPage, EditIdeaPage, NewIdeaPage, FunnelPage)
 - [x] Create `app/(product)/[portfolioCode]/[productCode]/ideas/` route structure with thin wiring
-- [ ] Create knowledge-base feature structure
-- [ ] Migrate KB components
-- [ ] Create KB page components
-- [ ] Create `app/(product)/.../(kb)/` route group with thin wiring
+- [x] Create knowledge-base feature structure
+- [x] Migrate KB components
+- [x] Create KB page components (KBListPage, NewKBPage, KBDetailPage)
+- [x] Create `app/(product)/[portfolioCode]/[productCode]/kb/` routes with thin wiring
 - [ ] Organize tests by feature in `cypress/e2e/{feature}/`
 - [ ] Update test imports if needed
 - [ ] Add feature-specific test scripts to `package.json`

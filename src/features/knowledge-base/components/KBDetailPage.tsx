@@ -4,22 +4,11 @@ import { useState, useEffect, useMemo } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { generateClient } from "aws-amplify/data";
-import type { Schema } from "../../../../../../amplify/data/resource";
+import type { Schema } from "../../../../amplify/data/resource";
 import { PageHeader } from "@/shared/components/PageHeader";
+import type { KBDocument, Product } from "../types";
 
-type KBDocument = {
-  id: string;
-  title: string;
-  content: string;
-  createdAt?: string | null;
-};
-
-type Product = {
-  code: string;
-  name: string;
-};
-
-export default function DocumentDetailPage() {
+export function KBDetailPage() {
   const client = useMemo(() => generateClient<Schema>(), []);
   const params = useParams();
   const portfolioCode = params.portfolioCode as string;
@@ -35,7 +24,6 @@ export default function DocumentDetailPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        // Fetch portfolio to get names
         const portfolioResult = await client.models.Portfolio.get({ code: portfolioCode });
         if (portfolioResult.data) {
           setPortfolioName(portfolioResult.data.name);
@@ -50,13 +38,14 @@ export default function DocumentDetailPage() {
           }
         }
 
-        // Fetch document
         const result = await client.models.KBDocument.get({ id });
         if (result.data) {
           setDocument({
             id: result.data.id,
             title: result.data.title,
             content: result.data.content,
+            portfolioCode: result.data.portfolioCode ?? portfolioCode,
+            productCode: result.data.productCode ?? productCode,
             createdAt: result.data.createdAt,
           });
         } else {
