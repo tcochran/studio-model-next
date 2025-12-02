@@ -213,10 +213,11 @@ async function deleteAllData() {
     const ideasResult = await client.models.Idea.list();
     const ideas = ideasResult.data ?? [];
     console.log(`Found ${ideas.length} ideas to delete`);
+
     for (const idea of ideas) {
       await client.models.Idea.delete({ id: idea.id });
     }
-    console.log("Deleted all ideas");
+    console.log(`Deleted all ideas`);
   } catch (error) {
     console.error("Error deleting ideas:", error);
   }
@@ -226,10 +227,11 @@ async function deleteAllData() {
     const docsResult = await client.models.KBDocument.list();
     const docs = docsResult.data ?? [];
     console.log(`Found ${docs.length} KB documents to delete`);
+
     for (const doc of docs) {
       await client.models.KBDocument.delete({ id: doc.id });
     }
-    console.log("Deleted all KB documents");
+    console.log(`Deleted all KB documents`);
   } catch (error) {
     console.error("Error deleting KB documents:", error);
   }
@@ -239,15 +241,14 @@ async function deleteAllData() {
     const portfoliosResult = await client.models.Portfolio.list();
     const portfolios = portfoliosResult.data ?? [];
     console.log(`Found ${portfolios.length} portfolios to delete`);
+
     for (const portfolio of portfolios) {
       await client.models.Portfolio.delete({ code: portfolio.code });
     }
-    console.log("Deleted all portfolios");
+    console.log(`Deleted all portfolios\n`);
   } catch (error) {
     console.error("Error deleting portfolios:", error);
   }
-
-  console.log("\nAll existing data deleted.\n");
 }
 
 async function seedPortfolios() {
@@ -309,7 +310,7 @@ async function seedIdeas() {
     }
   }
 
-  console.log(`\nCreated ${ideaNumber - 1} ideas for Product Flow.`);
+  console.log(`\nCreated ${ideaNumber - 1} ideas for Product Flow\n`);
 }
 
 // Test ideas for test portfolio
@@ -388,7 +389,7 @@ async function seedTestData() {
     });
 
     if (result.data) {
-      console.log("Created test KB document");
+      console.log(`Created test KB document`);
     } else {
       console.error("Failed to create test KB document", result.errors);
     }
@@ -396,15 +397,18 @@ async function seedTestData() {
     console.error("Error creating test KB document:", error);
   }
 
-  console.log(`\nCreated ${testIdeas.length} test ideas and 1 KB document.`);
+  console.log(`\nCreated ${testIdeas.length} test ideas and 1 KB document\n`);
 }
 
 async function main() {
+  console.log("=== Starting seed script ===\n");
+
   await deleteAllData();
   await seedPortfolios();
   await seedIdeas();
   await seedTestData();
-  console.log("\nSeeding complete!");
+
+  console.log("=== Seeding complete! ===");
 }
 
 main();

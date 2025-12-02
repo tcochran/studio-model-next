@@ -43,10 +43,17 @@ studio-model-next/
 ### Testing
 - Uses Cypress with mochawesome reporter for E2E tests
 - Tests are in `cypress/e2e/`
+- Test data constants are in `cypress/support/test-paths.ts`
 - **Important:** Always unset `ELECTRON_RUN_AS_NODE` before running Cypress tests (required when running from VSCode)
 - Run headless: `unset ELECTRON_RUN_AS_NODE && npx cypress run`
 - Interactive mode: `unset ELECTRON_RUN_AS_NODE && npx cypress open`
 - CI/CD runs tests automatically on every deployment via Amplify test phase
+
+#### Seeding Test Data
+- **For testing:** `npm run seed:test` - Fast (~3s), seeds only test portfolio data
+- **For development:** `npm run seed:portfolios` - Full seed (~10s), includes routeburn portfolio with 25 ideas
+- Test seed script only creates the "test" portfolio with 5 test ideas
+- Tests use hard-coded constants from `cypress/support/test-paths.ts` that match the seed data
 
 ### Local Development
 - Run dev server: `npm run dev`

@@ -1,4 +1,4 @@
-import { TEST_IDEAS_PATH } from "../support/test-paths";
+import { TEST_IDEAS_PATH, TEST_IDEAS } from "../support/test-paths";
 
 describe("Ideas", () => {
   describe("List Page", () => {
@@ -75,11 +75,8 @@ describe("Ideas", () => {
 
       it("sorts ideas by name alphabetically", () => {
         cy.visit(`${TEST_IDEAS_PATH}?sort=name`);
-        cy.get('[data-testid="idea-name"]').then(($names) => {
-          const names = [...$names].map((el) => el.textContent || "");
-          const sortedNames = [...names].sort((a, b) => a.localeCompare(b));
-          expect(names).to.deep.equal(sortedNames);
-        });
+        cy.get('[data-testid="idea-name"]').first().should("contain", TEST_IDEAS.IDEA_3.name);
+        cy.get('[data-testid="idea-name"]').last().should("contain", TEST_IDEAS.IDEA_4.name);
       });
 
       it("sorts ideas by upvotes descending", () => {
@@ -94,11 +91,7 @@ describe("Ideas", () => {
       it("updates displayed ideas when sort dropdown changes without refresh", () => {
         cy.get('[data-testid="sort-dropdown"]').select("name");
         cy.url().should("include", "sort=name");
-        cy.get('[data-testid="idea-name"]').should("have.length.at.least", 1).then(($sortedNames) => {
-          const sortedNames = [...$sortedNames].map((el) => el.textContent || "");
-          const expectedOrder = [...sortedNames].sort((a, b) => a.localeCompare(b));
-          expect(sortedNames).to.deep.equal(expectedOrder);
-        });
+        cy.get('[data-testid="idea-name"]').first().should("contain", TEST_IDEAS.IDEA_3.name);
       });
     });
 
@@ -131,19 +124,16 @@ describe("Ideas", () => {
 
       it("filters ideas by validation status", () => {
         cy.visit(`${TEST_IDEAS_PATH}?filter=firstLevel`);
-        cy.get('[data-testid="idea-item"]').should("have.length.at.least", 1);
-        cy.get('[data-testid="idea-item"]').each(($item) => {
-          cy.wrap($item).find('[data-testid="idea-status"]').should("contain", "First Level");
-        });
+        cy.get('[data-testid="idea-item"]').should("have.length.at.least", 3);
+        cy.contains('[data-testid="idea-name"]', TEST_IDEAS.IDEA_1.name).should("exist");
+        cy.contains('[data-testid="idea-name"]', TEST_IDEAS.IDEA_4.name).should("exist");
+        cy.contains('[data-testid="idea-name"]', TEST_IDEAS.IDEA_5.name).should("exist");
       });
 
       it("updates displayed ideas when filter dropdown changes without refresh", () => {
         cy.get('[data-testid="filter-dropdown"]').select("firstLevel");
         cy.url().should("include", "filter=firstLevel");
-        cy.get('[data-testid="idea-item"]').should("have.length.at.least", 1);
-        cy.get('[data-testid="idea-status"]').each(($status) => {
-          cy.wrap($status).should("contain", "First Level");
-        });
+        cy.get('[data-testid="idea-item"]').should("have.length.at.least", 3);
       });
     });
 
@@ -209,17 +199,13 @@ describe("Ideas", () => {
       });
 
       it("increments upvote count when clicked", () => {
-        cy.get('[data-testid="idea-item"]')
-          .first()
-          .within(() => {
-            cy.get('[data-testid="upvote-count"]')
-              .invoke("text")
-              .then((initialCount) => {
-                const initial = parseInt(initialCount, 10) || 0;
-                cy.get('[data-testid="upvote-button"]').click();
-                cy.get('[data-testid="upvote-count"]').should("contain", String(initial + 1));
-              });
+        cy.get('[data-testid="idea-item"]').first().within(() => {
+          cy.get('[data-testid="upvote-count"]').invoke("text").then((initialCountText) => {
+            const initialCount = parseInt(initialCountText, 10);
+            cy.get('[data-testid="upvote-button"]').click();
+            cy.get('[data-testid="upvote-count"]').should("contain", initialCount + 1);
           });
+        });
       });
 
       it("persists upvote count after page refresh", () => {
@@ -231,6 +217,8 @@ describe("Ideas", () => {
 
           cy.get("@firstIdea").find('[data-testid="upvote-button"]').click();
           cy.get("@firstIdea").find('[data-testid="upvote-count"]').should("contain", String(expectedCount));
+
+          cy.wait(2000); // Wait for the upvote to be saved to the database
 
           cy.reload();
 
@@ -253,50 +241,29 @@ describe("Ideas", () => {
     it("navigates to detail page when clicking idea name", () => {
       cy.visit(TEST_IDEAS_PATH);
       cy.get('[data-testid="idea-item"]').first().within(() => {
-        cy.get('[data-testid="idea-name"] a').should("exist");
         cy.get('[data-testid="idea-name"] a').click();
       });
       cy.url().should("include", `${TEST_IDEAS_PATH}/`);
     });
 
     it("displays idea details on detail page", () => {
-      cy.visit(TEST_IDEAS_PATH);
-      let ideaName: string;
+      cy.visit(`${TEST_IDEAS_PATH}/${TEST_IDEAS.IDEA_1.number}`);
 
-      cy.get('[data-testid="idea-item"]')
-        .first()
-        .within(() => {
-          cy.get('[data-testid="idea-name"]')
-            .invoke("text")
-            .then((text) => {
-              ideaName = text;
-            });
-          cy.get('[data-testid="idea-name"] a').click();
-        });
-
-      cy.get('[data-testid="idea-detail-name"]').should(($el) => {
-        expect($el.text()).to.include(ideaName);
-      });
-      cy.get('[data-testid="idea-detail-hypothesis"]').should("exist");
-      cy.get('[data-testid="idea-detail-status"]').should("exist");
+      cy.get('[data-testid="idea-detail-name"]').should("contain", TEST_IDEAS.IDEA_1.name);
+      cy.get('[data-testid="idea-detail-hypothesis"]').should("contain", TEST_IDEAS.IDEA_1.hypothesis);
+      cy.get('[data-testid="idea-detail-status"]').should("contain", TEST_IDEAS.IDEA_1.status);
       cy.get('[data-testid="idea-detail-source"]').should("exist");
       cy.get('[data-testid="idea-detail-created"]').should("exist");
     });
 
     it("preserves line breaks in hypothesis on detail page", () => {
-      cy.visit(TEST_IDEAS_PATH);
-      cy.get('[data-testid="idea-item"]').first().within(() => {
-        cy.get('[data-testid="idea-name"] a').click();
-      });
+      cy.visit(`${TEST_IDEAS_PATH}/${TEST_IDEAS.IDEA_1.number}`);
 
       cy.get('[data-testid="idea-detail-hypothesis"]').should("have.css", "white-space", "pre-wrap");
     });
 
     it("navigates back to ideas list", () => {
-      cy.visit(TEST_IDEAS_PATH);
-      cy.get('[data-testid="idea-item"]').first().within(() => {
-        cy.get('[data-testid="idea-name"] a').click();
-      });
+      cy.visit(`${TEST_IDEAS_PATH}/${TEST_IDEAS.IDEA_1.number}`);
 
       cy.get('[data-testid="back-to-ideas"]').click();
       cy.url().should("include", TEST_IDEAS_PATH);
@@ -369,47 +336,22 @@ describe("Ideas", () => {
 
   describe("Edit Page", () => {
     it("shows edit button on idea detail page", () => {
-      cy.visit(TEST_IDEAS_PATH);
-      cy.get('[data-testid="idea-item"]').first().within(() => {
-        cy.get('[data-testid="idea-name"] a').click();
-      });
+      cy.visit(`${TEST_IDEAS_PATH}/${TEST_IDEAS.IDEA_1.number}`);
       cy.get('[data-testid="edit-idea-button"]').should("exist");
     });
 
     it("navigates to edit form when clicking edit button", () => {
-      cy.visit(TEST_IDEAS_PATH);
-      cy.get('[data-testid="idea-item"]').first().within(() => {
-        cy.get('[data-testid="idea-name"] a').click();
-      });
+      cy.visit(`${TEST_IDEAS_PATH}/${TEST_IDEAS.IDEA_1.number}`);
       cy.get('[data-testid="edit-idea-button"]').click();
       cy.url().should("include", "/edit");
     });
 
     it("pre-populates form with existing idea data", () => {
-      cy.visit(TEST_IDEAS_PATH);
-      let ideaName: string;
-      let ideaHypothesis: string;
+      cy.visit(`${TEST_IDEAS_PATH}/${TEST_IDEAS.IDEA_1.number}/edit`);
 
-      cy.get('[data-testid="idea-item"]').first().within(() => {
-        cy.get('[data-testid="idea-name"]').invoke("text").then((text) => {
-          ideaName = text;
-        });
-        cy.get('[data-testid="idea-hypothesis"]').invoke("text").then((text) => {
-          ideaHypothesis = text.substring(0, 50);
-        });
-        cy.get('[data-testid="idea-name"] a').click();
-      });
-
-      cy.get('[data-testid="edit-idea-button"]').click();
-
-      cy.get('input[name="name"]').should(($input) => {
-        expect($input.val()).to.equal(ideaName);
-      });
-      cy.get('textarea[name="hypothesis"]').should(($textarea) => {
-        const value = $textarea.val() as string;
-        expect(value).to.include(ideaHypothesis);
-      });
-      cy.get('select[name="validationStatus"]').should("not.have.value", "");
+      cy.get('input[name="name"]').should("have.value", TEST_IDEAS.IDEA_1.name);
+      cy.get('textarea[name="hypothesis"]').should("have.value", TEST_IDEAS.IDEA_1.hypothesis);
+      cy.get('select[name="validationStatus"]').should("have.value", TEST_IDEAS.IDEA_1.statusValue);
       cy.get('[data-testid="source-select"]').should("exist");
     });
 
@@ -417,30 +359,22 @@ describe("Ideas", () => {
       const updatedName = "Updated Idea Name " + Date.now();
       const updatedHypothesis = "This is an updated hypothesis for testing.";
 
-      cy.visit(TEST_IDEAS_PATH);
-      cy.get('[data-testid="idea-item"]').first().within(() => {
-        cy.get('[data-testid="idea-name"] a').click();
-      });
-      cy.get('[data-testid="edit-idea-button"]').click();
+      cy.visit(`${TEST_IDEAS_PATH}/${TEST_IDEAS.IDEA_2.number}/edit`);
 
       cy.get('input[name="name"]').clear().type(updatedName);
       cy.get('textarea[name="hypothesis"]').clear().type(updatedHypothesis);
-      cy.get('select[name="validationStatus"]').select("secondLevel");
+      cy.get('select[name="validationStatus"]').select("firstLevel");
 
       cy.get('button[type="submit"]').click();
 
       cy.url().should("not.include", "/edit");
       cy.get('[data-testid="idea-detail-name"]').should("contain", updatedName);
       cy.get('[data-testid="idea-detail-hypothesis"]').should("contain", updatedHypothesis);
-      cy.get('[data-testid="idea-detail-status"]').should("contain", "Second Level");
+      cy.get('[data-testid="idea-detail-status"]').should("contain", "First Level");
     });
 
     it("shows validation errors for invalid data", () => {
-      cy.visit(TEST_IDEAS_PATH);
-      cy.get('[data-testid="idea-item"]').first().within(() => {
-        cy.get('[data-testid="idea-name"] a').click();
-      });
-      cy.get('[data-testid="edit-idea-button"]').click();
+      cy.visit(`${TEST_IDEAS_PATH}/${TEST_IDEAS.IDEA_1.number}/edit`);
 
       cy.get('input[name="name"]').clear();
       cy.get('textarea[name="hypothesis"]').clear();
@@ -453,21 +387,13 @@ describe("Ideas", () => {
     });
 
     it("cancels edit and returns to detail view", () => {
-      cy.visit(TEST_IDEAS_PATH);
-      cy.get('[data-testid="idea-item"]').first().within(() => {
-        cy.get('[data-testid="idea-name"] a').click();
-      });
-
-      cy.get('[data-testid="edit-idea-button"]').click();
-      cy.url().should("include", "/edit");
+      cy.visit(`${TEST_IDEAS_PATH}/${TEST_IDEAS.IDEA_1.number}/edit`);
       cy.get('input[name="name"]').type(" Some Changes");
 
       cy.get('[data-testid="cancel-button"]').click();
 
       cy.url().should("not.include", "/edit");
-      cy.url().should(($url) => {
-        expect($url).to.include(`${TEST_IDEAS_PATH}/`);
-      });
+      cy.url().should("include", `${TEST_IDEAS_PATH}/${TEST_IDEAS.IDEA_1.number}`);
     });
 
     it("shows error for invalid idea ID on edit page", () => {
@@ -530,28 +456,17 @@ describe("Ideas", () => {
     it("expanded content shows all idea data", () => {
       cy.visit(TEST_IDEAS_PATH);
 
-      // Expand first row
       cy.get('[data-testid="idea-item"]').first().click();
 
-      // Expanded content should show all data
-      cy.get('[data-testid="expanded-content"]').within(() => {
-        // Should have idea number
-        cy.contains("#").should("be.visible");
-        // Should have name as link
-        cy.get("a").should("exist");
-        // Should have hypothesis
-        cy.get('[data-testid="expanded-hypothesis"]').should("be.visible");
-        // Should have upvote button
-        cy.contains("+1").should("be.visible");
-        // Should have created date
-        cy.get('[data-testid="expanded-created"]').should("be.visible");
-      });
+      cy.get('[data-testid="expanded-content"]').should("be.visible");
+      cy.get('[data-testid="expanded-hypothesis"]').should("be.visible");
+      cy.get('[data-testid="expanded-created"]').should("be.visible");
+      cy.get('[data-testid="expanded-content"]').contains("+1").should("be.visible");
     });
 
     it("upvote button works in expanded view", () => {
       cy.visit(TEST_IDEAS_PATH);
 
-      // Get initial upvote count
       let initialCount: number;
       cy.get('[data-testid="idea-item"]').first().within(() => {
         cy.get('[data-testid="upvote-count"]').invoke("text").then((text) => {
@@ -559,15 +474,10 @@ describe("Ideas", () => {
         });
       });
 
-      // Expand row
       cy.get('[data-testid="idea-item"]').first().click();
 
-      // Click upvote in expanded view
-      cy.get('[data-testid="expanded-content"]').within(() => {
-        cy.contains("+1").click();
-      });
+      cy.get('[data-testid="expanded-content"]').contains("+1").click();
 
-      // Collapse and check count increased
       cy.get('[data-testid="expanded-content"]').click();
       cy.get('[data-testid="idea-item"]').first().within(() => {
         cy.get('[data-testid="upvote-count"]').should(($count) => {

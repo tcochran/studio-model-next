@@ -12,7 +12,8 @@
     "test:e2e": "start-server-and-test start http://localhost:3000 cypress:run",
     "pretest:e2e": "rm -rf cypress/report && npm run build",
     "posttest:e2e": "npx mochawesome-merge cypress/report/*.json > cypress/report/combined.json && npx marge cypress/report/combined.json -f report -o cypress/report",
-    "seed:portfolios": "tsx scripts/seed-portfolios.ts"
+    "seed:portfolios": "tsx scripts/seed-portfolios.ts",
+    "seed:test": "tsx scripts/seed-test-data.ts"
   },
   "dependencies": {
     "@aws-amplify/adapter-nextjs": "^1.6.11",
