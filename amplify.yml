@@ -20,6 +20,9 @@ frontend:
       - .next/cache/**/* # Example for Next.js
 test:
   phases:
+    preTest:
+      commands:
+        - npm run seed:test
     test:
       commands:
         - npx start-server-and-test start http://localhost:3000 cypress:run
