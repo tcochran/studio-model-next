@@ -127,19 +127,25 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         switch (name) {
             case "get_idea": {
                 const { portfolioCode, productCode, ideaNumber } = args;
-                const result = await graphqlRequest(`query GetIdeaByNumber($portfolioCode: String!, $productCode: String!, $ideaNumber: Int!) {
-            getIdeaByNumber(portfolioCode: $portfolioCode, productCode: $productCode, ideaNumber: $ideaNumber) {
-              id
-              ideaNumber
-              name
-              hypothesis
-              validationStatus
-              upvotes
-              source
-              portfolioCode
-              productCode
-              createdAt
-              updatedAt
+                const result = await graphqlRequest(`query ListIdeas($portfolioCode: String!, $productCode: String!, $ideaNumber: Int!) {
+            listIdeas(filter: {
+              portfolioCode: { eq: $portfolioCode },
+              productCode: { eq: $productCode },
+              ideaNumber: { eq: $ideaNumber }
+            }) {
+              items {
+                id
+                ideaNumber
+                name
+                hypothesis
+                validationStatus
+                upvotes
+                source
+                portfolioCode
+                productCode
+                createdAt
+                updatedAt
+              }
             }
           }`, { portfolioCode, productCode, ideaNumber });
                 if (result.errors) {
@@ -153,7 +159,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                         isError: true,
                     };
                 }
-                const idea = result.data?.getIdeaByNumber;
+                const idea = result.data?.listIdeas?.items?.[0];
                 if (!idea) {
                     return {
                         content: [
