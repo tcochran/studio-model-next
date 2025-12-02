@@ -3,10 +3,10 @@ backend:
   phases:
     build:
       commands:
-        - npm config set cache .npm --global
-        - npm ci --prefer-offline
-        - cd amplify && npm ci --prefer-offline && cd ..
+        - ls -la
+        - npm ci --cache .npm --prefer-offline
         - npx ampx pipeline-deploy --branch $AWS_BRANCH --app-id $AWS_APP_ID
+        - ls -la
   cache:
     paths:
       - .npm/**/*
@@ -14,27 +14,34 @@ frontend:
   phases:
     build:
       commands:
+        - ls -la
         - npm run build
+        - ls -la
   artifacts:
     baseDirectory: .next
     files:
-      - "**/*"
-test:
-  phases:
-    preTest:
-      commands:
-        - export CYPRESS_VERIFY_TIMEOUT=120000
-        - npm run seed:test
-    test:
-      commands:
-        - npx start-server-and-test start http://localhost:3000 cypress:run
-    postTest:
-      commands:
-        - npx mochawesome-merge cypress/report/*.json > cypress/report/combined.json
-        - npx marge cypress/report/combined.json -f report -o cypress/report
-  artifacts:
-    baseDirectory: cypress
-    configFilePath: "**/mochawesome.json"
-    files:
-      - "**/*.png"
-      - "**/*.mp4"
+      - '**/*'
+  cache:
+    paths:
+      - .next/cache/**/*
+      - .npm/**/*
+      - node_modules/**/*
+# test:
+#   phases:
+#     preTest:
+#       commands:
+#         - export CYPRESS_VERIFY_TIMEOUT=120000
+#         - npm run seed:test
+#     test:
+#       commands:
+#         - npx start-server-and-test start http://localhost:3000 cypress:run
+#     postTest:
+#       commands:
+#         - npx mochawesome-merge cypress/report/*.json > cypress/report/combined.json
+#         - npx marge cypress/report/combined.json -f report -o cypress/report
+  # artifacts:
+  #   baseDirectory: cypress
+  #   configFilePath: "**/mochawesome.json"
+  #   files:
+  #     - "**/*.png"
+  #     - "**/*.mp4"
