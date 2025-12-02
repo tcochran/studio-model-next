@@ -1,7 +1,7 @@
 import { cookiesClient } from "@/shared/utils/amplify-server-utils";
 import Link from "next/link";
-import { PageHeader } from "../../../../components/PageHeader";
-import { PageTitle } from "../../../../components/PageTitle";
+import { PageHeader } from "@/shared/components/PageHeader";
+import { PageTitle } from "@/shared/components/PageTitle";
 
 export const dynamic = "force-dynamic";
 

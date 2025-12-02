@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "../../../../../../amplify/data/resource";
-import { PageHeader } from "../../../../../components/PageHeader";
+import { PageHeader } from "@/shared/components/PageHeader";
 
 type ValidationStatus = "backlog" | "firstLevel" | "secondLevel" | "scaling" | "failed";
 type Source = "customerFeedback" | "teamBrainstorm" | "competitorAnalysis" | "userResearch" | "marketTrend" | "internalRequest" | "other";
