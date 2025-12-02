@@ -1,6 +1,6 @@
 # Spec 32: Modular Architecture
 
-**Status:** In Progress (85% Complete)
+**Status:** In Progress (95% Complete)
 **Created:** 2025-12-02
 **Last Updated:** 2025-12-02
 
@@ -542,11 +542,11 @@ npm run test:e2e:ui
 
 ## Migration Strategy
 
-**Current Status: Phase 3 Complete (85% Overall)**
+**Current Status: Phase 4 Complete (95% Overall)**
 - ✅ Phase 1: Complete - Module structure created
 - ✅ Phase 2: Complete - Backend schemas split and tested
 - ✅ Phase 3: Complete - Frontend migration (Portfolios ✅, Ideas ✅, KB ✅)
-- ⏳ Phase 4: Pending - Test organization
+- ✅ Phase 4: Complete - Test organization
 - ⏳ Phase 5: Pending - Documentation
 
 ### Phase 1: Create Module Structure (No Breaking Changes) ✅
@@ -591,11 +591,12 @@ npm run test:e2e:ui
    - Update routes to import from feature (thin wiring)
    - Create `queries.ts`, `mutations.ts`, `types.ts`
 
-### Phase 4: Organize Tests ⏳ Pending
+### Phase 4: Organize Tests ✅ Complete
 1. Create module subdirectories in `cypress/e2e/`
 2. Move test files into appropriate module directories
-3. Update test imports if needed
-4. Run full test suite to verify
+3. Update test imports (fix `../support/test-paths` → `../../support/test-paths`)
+4. Add feature-specific test scripts to package.json
+5. Run full test suite to verify (131 tests passing)
 
 ### Phase 5: Documentation ⏳ Pending
 1. Write README.md for each module
@@ -792,10 +793,10 @@ import { StatusBadge } from './StatusBadge';
 - [x] Migrate KB components
 - [x] Create KB page components (KBListPage, NewKBPage, KBDetailPage)
 - [x] Create `app/(product)/[portfolioCode]/[productCode]/kb/` routes with thin wiring
-- [ ] Organize tests by feature in `cypress/e2e/{feature}/`
-- [ ] Update test imports if needed
-- [ ] Add feature-specific test scripts to `package.json`
-- [ ] Test each feature's test suite independently
+- [x] Organize tests by feature in `cypress/e2e/{feature}/`
+- [x] Update test imports if needed
+- [x] Add feature-specific test scripts to `package.json`
+- [x] Test each feature's test suite independently
 - [ ] Write feature READMEs (including test commands)
 - [ ] Update root README.md
 - [ ] Update `tsconfig.json` with path aliases (@/features/*, @/shared/*)

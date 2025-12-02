@@ -1,4 +1,4 @@
-import { TEST_PORTFOLIO_CODE, TEST_PRODUCT_CODE } from "../support/test-paths";
+import { TEST_PORTFOLIO_CODE, TEST_PRODUCT_CODE } from "../../support/test-paths";
 
 describe("Public API", () => {
   // Load API config from amplify_outputs.json

@@ -1,4 +1,4 @@
-import { TEST_IDEAS_PATH, TEST_IDEAS } from "../support/test-paths";
+import { TEST_IDEAS_PATH, TEST_IDEAS } from "../../support/test-paths";
 
 describe("Ideas", () => {
   describe("List Page", () => {

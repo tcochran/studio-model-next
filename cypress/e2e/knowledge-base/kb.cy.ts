@@ -1,4 +1,4 @@
-import { TEST_KB_PATH, TEST_IDEAS_PATH } from "../support/test-paths";
+import { TEST_KB_PATH, TEST_IDEAS_PATH } from "../../support/test-paths";
 
 describe("Knowledge Base Page", () => {
   it("displays the KB page heading", () => {

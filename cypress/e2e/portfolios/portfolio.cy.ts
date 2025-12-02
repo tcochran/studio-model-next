@@ -38,7 +38,7 @@ describe("Portfolio Form", () => {
     cy.get('[name="code"]').type(uniqueCode);
     cy.get('[name="name"]').type("Test Portfolio");
     cy.get('button[type="submit"]').click();
-    cy.url({ timeout: 10000 }).should("eq", Cypress.config().baseUrl + "/portfolios");
+    cy.url({ timeout: 1000 }).should("eq", Cypress.config().baseUrl + "/portfolios");
   });
 });
 
@@ -53,7 +53,7 @@ describe("Portfolio Detail Page", () => {
         cy.get('[name="code"]').type(`test-portfolio-${Date.now()}`);
         cy.get('[name="name"]').type("Test Portfolio");
         cy.get('button[type="submit"]').click();
-        cy.url({ timeout: 10000 }).should("eq", Cypress.config().baseUrl + "/portfolios");
+        cy.url({ timeout: 1000 }).should("eq", Cypress.config().baseUrl + "/portfolios");
       }
     });
   };
@@ -69,21 +69,21 @@ describe("Portfolio Detail Page", () => {
   it("shows organization name", () => {
     ensurePortfolioExists();
     cy.visit("/portfolios");
-    cy.get('[data-testid="portfolio-card"]', { timeout: 10000 }).first().click();
+    cy.get('[data-testid="portfolio-card"]', { timeout: 1000 }).first().click();
     cy.get('[data-testid="organization-name"]').should("exist");
   });
 
   it("shows portfolio code", () => {
     ensurePortfolioExists();
     cy.visit("/portfolios");
-    cy.get('[data-testid="portfolio-card"]', { timeout: 10000 }).first().click();
+    cy.get('[data-testid="portfolio-card"]', { timeout: 1000 }).first().click();
     cy.get('[data-testid="portfolio-code"]').should("exist");
   });
 
   it("has back link to portfolio list", () => {
     ensurePortfolioExists();
     cy.visit("/portfolios");
-    cy.get('[data-testid="portfolio-card"]', { timeout: 10000 }).first().click();
+    cy.get('[data-testid="portfolio-card"]', { timeout: 1000 }).first().click();
     cy.contains("a", "Back").click();
     cy.url().should("eq", Cypress.config().baseUrl + "/portfolios");
   });
@@ -91,7 +91,7 @@ describe("Portfolio Detail Page", () => {
   it("has add product button", () => {
     ensurePortfolioExists();
     cy.visit("/portfolios");
-    cy.get('[data-testid="portfolio-card"]', { timeout: 10000 }).first().click();
+    cy.get('[data-testid="portfolio-card"]', { timeout: 1000 }).first().click();
     cy.get('[data-testid="add-product-button"]').should("exist");
   });
 });
@@ -106,7 +106,7 @@ describe("Product Management", () => {
         cy.get('[name="code"]').type(`test-portfolio-${Date.now()}`);
         cy.get('[name="name"]').type("Test Portfolio");
         cy.get('button[type="submit"]').click();
-        cy.url({ timeout: 10000 }).should("eq", Cypress.config().baseUrl + "/portfolios");
+        cy.url({ timeout: 1000 }).should("eq", Cypress.config().baseUrl + "/portfolios");
       }
     });
   };
@@ -114,12 +114,12 @@ describe("Product Management", () => {
   it("can add a product to portfolio", () => {
     ensurePortfolioExists();
     cy.visit("/portfolios");
-    cy.get('[data-testid="portfolio-card"]', { timeout: 10000 }).first().click();
+    cy.get('[data-testid="portfolio-card"]', { timeout: 1000 }).first().click();
     cy.get('[data-testid="add-product-button"]').click();
     cy.get('[name="productCode"]').type(`test-product-${Date.now()}`);
     cy.get('[name="productName"]').type("Test Product");
     cy.get('[data-testid="save-product-button"]').click();
-    cy.get('[data-testid="products-list"]', { timeout: 10000 }).should("contain", "Test Product");
+    cy.get('[data-testid="products-list"]', { timeout: 1000 }).should("contain", "Test Product");
   });
 
   it("shows products list in portfolio detail", () => {
@@ -164,7 +164,7 @@ describe("Owner Management", () => {
   it("can add an owner to portfolio", () => {
     ensurePortfolioExists();
     cy.visit("/portfolios");
-    cy.get('[data-testid="portfolio-card"]', { timeout: 10000 }).first().click();
+    cy.get('[data-testid="portfolio-card"]', { timeout: 1000 }).first().click();
     cy.get('[data-testid="add-owner-button"]').click();
     cy.get('[name="ownerEmail"]').type(`test-${Date.now()}@example.com`);
     cy.get('[data-testid="save-owner-button"]').click();
@@ -174,7 +174,7 @@ describe("Owner Management", () => {
   it("shows owners list in portfolio detail", () => {
     ensurePortfolioExists();
     cy.visit("/portfolios");
-    cy.get('[data-testid="portfolio-card"]', { timeout: 10000 }).first().click();
+    cy.get('[data-testid="portfolio-card"]', { timeout: 1000 }).first().click();
     cy.get('[data-testid="owners-list"]').should("exist");
   });
 });

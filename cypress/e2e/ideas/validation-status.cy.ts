@@ -1,4 +1,4 @@
-import { TEST_IDEAS_PATH } from "../support/test-paths";
+import { TEST_IDEAS_PATH } from "../../support/test-paths";
 
 describe("Validation Status - Backlog and Failed", () => {
   describe("Status Display in Ideas List", () => {

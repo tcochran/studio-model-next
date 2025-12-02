@@ -1,4 +1,4 @@
-import { TEST_IDEAS_PATH } from "../support/test-paths";
+import { TEST_IDEAS_PATH } from "../../support/test-paths";
 
 describe("Funnel View", () => {
   beforeEach(() => {
