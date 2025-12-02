@@ -14,29 +14,24 @@ export const handler: Schema['getIdeaByNumber']['functionHandler'] = async (even
     throw new Error('Configuration error: IDEA_TABLE_NAME not set');
   }
 
-  try {
-    // Query using the productCode GSI
-    const command = new QueryCommand({
-      TableName: tableName,
-      IndexName: 'ideasByProductCode',
-      KeyConditionExpression: 'productCode = :productCode',
-      FilterExpression: 'portfolioCode = :portfolioCode AND ideaNumber = :ideaNumber',
-      ExpressionAttributeValues: {
-        ':productCode': productCode,
-        ':portfolioCode': portfolioCode,
-        ':ideaNumber': ideaNumber,
-      },
-    });
+  // Query using the productCode GSI
+  const command = new QueryCommand({
+    TableName: tableName,
+    IndexName: 'ideasByProductCode',
+    KeyConditionExpression: 'productCode = :productCode',
+    FilterExpression: 'portfolioCode = :portfolioCode AND ideaNumber = :ideaNumber',
+    ExpressionAttributeValues: {
+      ':productCode': productCode,
+      ':portfolioCode': portfolioCode,
+      ':ideaNumber': ideaNumber,
+    },
+  });
 
-    const result = await docClient.send(command);
+  const result = await docClient.send(command);
 
-    if (result.Items && result.Items.length > 0) {
-      return result.Items[0] as Schema['Idea']['type'];
-    }
-
-    return null;
-  } catch (error) {
-    console.error('Error querying DynamoDB:', error);
-    throw error;
+  if (result.Items && result.Items.length > 0) {
+    return result.Items[0] as Schema['Idea']['type'];
   }
+
+  return null;
 };
