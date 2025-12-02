@@ -1,4 +1,4 @@
-import { cookiesClient } from "../../../../utils/amplify-server-utils";
+import { cookiesClient } from "@/shared/utils/amplify-server-utils";
 import Link from "next/link";
 import IdeasList from "../../../IdeasList";
 import { PageHeader } from "../../../../components/PageHeader";

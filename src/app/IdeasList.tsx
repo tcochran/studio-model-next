@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "../../amplify/data/resource";
-import { formatRelativeTime } from "../utils/formatRelativeTime";
+import { formatRelativeTime } from "@/shared/utils/formatRelativeTime";
 
 type Idea = {
   id: string;
