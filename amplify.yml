@@ -6,6 +6,10 @@ backend:
         - npm ci --prefer-offline
         - cd amplify && npm ci --prefer-offline && cd ..
         - npx ampx pipeline-deploy --branch $AWS_BRANCH --app-id $AWS_APP_ID
+  cache:
+    paths:
+      - node_modules/**/*
+      - amplify/node_modules/**/*
 frontend:
   phases:
     build:
@@ -22,6 +26,7 @@ test:
   phases:
     preTest:
       commands:
+        - export CYPRESS_VERIFY_TIMEOUT=120000
         - npm run seed:test
     test:
       commands:
