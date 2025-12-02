@@ -47,13 +47,15 @@ studio-model-next/
 - **Important:** Always unset `ELECTRON_RUN_AS_NODE` before running Cypress tests (required when running from VSCode)
 - Run headless: `unset ELECTRON_RUN_AS_NODE && npx cypress run`
 - Interactive mode: `unset ELECTRON_RUN_AS_NODE && npx cypress open`
+- Full E2E test suite: `npm run test:e2e` (seeds test data, builds, and runs all tests)
 - CI/CD runs tests automatically on every deployment via Amplify test phase
 
 #### Seeding Test Data
-- **For testing:** `npm run seed:test` - Fast (~3s), seeds only test portfolio data
+- **For testing:** `npm run seed:test` - Fast (~2s), seeds only test portfolio data
 - **For development:** `npm run seed:portfolios` - Full seed (~10s), includes routeburn portfolio with 25 ideas
 - Test seed script only creates the "test" portfolio with 5 test ideas
 - Tests use hard-coded constants from `cypress/support/test-paths.ts` that match the seed data
+- The `test:e2e` script automatically runs `seed:test` before building and running tests
 
 ### Local Development
 - Run dev server: `npm run dev`
