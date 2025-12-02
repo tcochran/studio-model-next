@@ -12,7 +12,7 @@ export const ideaSchema = {
     .authorization((allow) => [allow.publicApiKey()])
     .handler(
       a.handler.custom({
-        entry: './resolvers/getIdeaByNumber.ts',
+        entry: '../resolvers/getIdeaByNumber.ts',
         dataSource: a.ref('Idea')
       })
     ),
