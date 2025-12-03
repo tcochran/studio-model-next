@@ -1,3 +1,4 @@
+import StudioHeader from '@/studio/components/StudioHeader';
 import Footer from '@/studio/components/Footer';
 
 export default function AuthenticatedLayout({
@@ -7,6 +8,7 @@ export default function AuthenticatedLayout({
 }) {
   return (
     <div className="flex flex-col min-h-screen">
+      <StudioHeader />
       <div className="flex-1">
         {children}
       </div>
