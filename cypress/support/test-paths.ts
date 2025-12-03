@@ -5,6 +5,14 @@ export const TEST_BASE_PATH = `/${TEST_PORTFOLIO_CODE}/${TEST_PRODUCT_CODE}`;
 export const TEST_IDEAS_PATH = `${TEST_BASE_PATH}/ideas`;
 export const TEST_KB_PATH = `${TEST_BASE_PATH}/kb`;
 
+// Test studio users - matches scripts/seed-test-data.ts
+export const TEST_USERS = {
+  PRODUCT_MANAGER: "pm@test.com",
+  ENGINEER: "engineer@test.com",
+  DESIGNER: "designer@test.com",
+  NON_MEMBER: "nonmember@test.com",
+};
+
 // Test seed data constants - matches scripts/seed-portfolios.ts
 export const TEST_IDEAS = {
   IDEA_1: {

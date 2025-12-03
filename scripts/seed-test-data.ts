@@ -78,6 +78,34 @@ async function deleteTestData() {
     console.error("Error deleting test KB documents:", error);
   }
 
+  // Delete test studio users
+  try {
+    const usersResult = await client.models.StudioUser.list({
+      filter: { email: { contains: "@test.com" } },
+    });
+    const users = usersResult.data ?? [];
+    console.log(`Found ${users.length} test studio users to delete`);
+
+    await Promise.all(users.map((user) => client.models.StudioUser.delete({ id: user.id })));
+    console.log(`Deleted test studio users`);
+  } catch (error) {
+    console.error("Error deleting test studio users:", error);
+  }
+
+  // Delete test studios
+  try {
+    const studiosResult = await client.models.Studio.list({
+      filter: { name: { eq: "Test Studio" } },
+    });
+    const studios = studiosResult.data ?? [];
+    console.log(`Found ${studios.length} test studios to delete`);
+
+    await Promise.all(studios.map((studio) => client.models.Studio.delete({ id: studio.id })));
+    console.log(`Deleted test studios`);
+  } catch (error) {
+    console.error("Error deleting test studios:", error);
+  }
+
   // Delete test portfolio
   try {
     await client.models.Portfolio.delete({ code: "test" });
@@ -166,11 +194,63 @@ async function seedTestIdeas() {
   }
 }
 
+async function seedTestStudio() {
+  console.log("Seeding test studio...\n");
+
+  try {
+    // Create test studio linked to test portfolio
+    const studioResult = await client.models.Studio.create({
+      name: "Test Studio",
+      portfolioId: "test",
+    });
+
+    if (!studioResult.data) {
+      console.error("Failed to create test studio", studioResult.errors);
+      return;
+    }
+
+    console.log(`Created test studio: ${studioResult.data.name}`);
+
+    // Create test users
+    const testUsers = [
+      { email: "pm@test.com", role: "product_manager" as const, specialization: "Product Strategy" },
+      { email: "engineer@test.com", role: "engineer" as const, specialization: "Full Stack" },
+      { email: "designer@test.com", role: "designer" as const, specialization: "UI/UX Design" },
+    ];
+
+    const userPromises = testUsers.map((user) =>
+      client.models.StudioUser.create({
+        studioId: studioResult.data!.id,
+        email: user.email,
+        role: user.role,
+        specialization: user.specialization,
+      })
+    );
+
+    const userResults = await Promise.all(userPromises);
+    const successCount = userResults.filter((r) => r.data).length;
+    console.log(`Created ${successCount} test studio users`);
+
+    userResults.forEach((result, index) => {
+      if (result.data) {
+        console.log(`  - ${testUsers[index].email} (${testUsers[index].role})`);
+      } else {
+        console.error(`  - Failed: ${testUsers[index].email}`, result.errors);
+      }
+    });
+
+    console.log("");
+  } catch (error) {
+    console.error("Error creating test studio:", error);
+  }
+}
+
 async function main() {
   console.log("=== Starting test data seed ===\n");
 
   await deleteTestData();
   await seedTestPortfolio();
+  await seedTestStudio();
   await seedTestIdeas();
 
   console.log("=== Test data seeding complete! ===");
