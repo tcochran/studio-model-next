@@ -5,6 +5,7 @@ backend:
       commands:
         - ls -la
         - npm install
+        - npm install cypress --force
         - npx ampx pipeline-deploy --branch $AWS_BRANCH --app-id $AWS_APP_ID
         - ls -la
 frontend:
@@ -20,7 +21,6 @@ frontend:
     paths:
       - .next/cache/**/*
       - node_modules/**/*
-      - .cache/Cypress
 test:
   phases:
     preTest:
